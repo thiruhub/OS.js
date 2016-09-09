@@ -72,6 +72,7 @@
       method           : 'GET',
       responseType     : null,
       requestHeaders   : {},
+      withCredentials  : false,
       body             : null,
       timeout          : 0,
       json             : false,
@@ -198,6 +199,7 @@
       });
 
       request.responseType = args.responseType || '';
+      request.withCredentials = args.withCredentials;
 
       args.oncreated(request);
       request.send(args.body);
@@ -306,6 +308,7 @@
       if ( raw ) {
         OSjs.Utils.ajax({
           url: src,
+          withCredentials: true,
           onerror: function() {
             _done(false);
           },
