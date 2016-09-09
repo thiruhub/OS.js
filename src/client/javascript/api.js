@@ -571,6 +571,10 @@
         });
       }
 
+      list.forEach(function(i) {
+        i.raw = true;
+      });
+
       return list;
     })();
 

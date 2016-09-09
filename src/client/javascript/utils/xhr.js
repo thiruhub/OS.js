@@ -293,7 +293,7 @@
       }, 30000);
     }
 
-    function createScript(src, cb) {
+    function createScript(src, raw, cb) {
       var loaded = false;
 
       function _done(res) {
@@ -301,6 +301,24 @@
           loaded = true;
           cb(res, src);
         }
+      }
+
+      if ( raw ) {
+        OSjs.Utils.ajax({
+          url: src,
+          onerror: function() {
+            _done(false);
+          },
+          onsuccess: function(data) {
+            var el = document.createElement('script');
+            el.setAttribute('charset', 'utf-8');
+            el.innerHTML = data;
+            el.setAttribute('data-src', src);
+            document.querySelector('head').appendChild(el);
+            _done(true);
+          }
+        });
+        return;
       }
 
       OSjs.Utils.$createJS(src, function() {
@@ -368,7 +386,7 @@
           if ( item.type.match(/^style/) ) {
             return createStylesheet(item.src, _onentryloaded);
           } else if ( item.type.match(/script$/) ) {
-            return createScript(item.src, _onentryloaded);
+            return createScript(item.src, item.raw, _onentryloaded);
           } else {
             failed.push(item.src);
           }
