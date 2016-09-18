@@ -721,17 +721,6 @@
     };
   })();
 
-  /**
-   * Returns an object that client understand
-   */
-  function normalizeManifest(obj) {
-    var result = {};
-    Object.keys(obj).forEach(function(i) {
-      result[obj[i].className] = obj[i];
-    });
-    return result;
-  }
-
   function readAndMerge(grunt, iter, config) {
     //console.log('+++', iter);
     try {
@@ -1832,10 +1821,8 @@
         manifest.preload = preload;
         manifest.preload.forEach(function(l, i) {
           if ( !l.src.match(/^(ftp|https?\:)?\/\//) ) {
-            var src = ([p, l.src]).join('/');
-            manifest.preload[i].src = src;
-
             if ( dist === 'dist-dev' ) {
+              var src = ([p, l.src]).join('/');
               var asrc = _path.join(PATHS.packages, src);
               if ( _fs.existsSync(asrc) ) {
                 var stat = _fs.statSync(asrc);
@@ -1850,7 +1837,7 @@
       });
 
       var tpl = readFile(_path.join(PATHS.templates, 'dist', 'packages.js')).toString();
-      var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(list), null, 4));
+      var content = tpl.replace('%PACKAGES%', JSON.stringify(list, null, 4));
       writeFile(out, content);
     }
 
@@ -1932,7 +1919,7 @@
 
     grunt.log.subhead('Writing metadata...');
     var tpl = readFile(_path.join(PATHS.templates, 'dist', 'packages.js')).toString();
-    var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(packages), null, 2));
+    var content = tpl.replace('%PACKAGES%', JSON.stringify(packages, null, 2));
     writeFile(PATHS.out_client_manifest, content);
     writeFile(PATHS.out_client_manifest.replace(/\.js$/, '.min.js'), _ugly.minify(PATHS.out_client_manifest, {comments: true}).code);
   }

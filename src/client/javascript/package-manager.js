@@ -140,6 +140,32 @@
        * @param  {Function} callback      callback
        */
       _loadMetadata: function(callback) {
+        var rootURI = (window.location.pathname || '/').replace(/\/$/, '/packages/'); // FIXME
+
+        function checkEntry(key, iter, scope) {
+          iter = Utils.cloneObject(iter);
+
+          iter.type = iter.type || 'application';
+
+          if ( scope ) {
+            iter.scope = scope;
+          }
+
+          if ( iter.preload ) {
+            iter.preload.forEach(function(it) {
+              if ( it.src && !it.src.match(/^(\/)|(http)|(ftp)/) ) {
+                if ( iter.scope === 'user' ) {
+                  it.src = Utils.pathJoin(iter.path, it.src);
+                } else {
+                  it.src = Utils.pathJoin(rootURI, key, it.src);
+                }
+              }
+            });
+          }
+
+          return iter;
+        }
+
         if ( window.location.protocol === 'file:' ) {
           var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
           Utils.preload([uri], function(total, failed) {
@@ -148,14 +174,20 @@
               return;
             }
 
-            packages = OSjs.Core.getMetadata();
+            packages = {};
+
+            var list = OSjs.Core.getMetadata();
+            Object.keys(list).forEach(function(name) {
+              var iter = list[name];
+              packages[iter.className] = checkEntry(name, iter);
+            });
+
             callback();
           });
           return;
         }
 
         var paths = [API.getConfig('PackageManager.UserPackages')];
-        var rootURI = (window.location.pathname || '/').replace(/\/$/, '/packages/'); // FIXME
 
         API.call('packages', {action: 'list', args: {paths: paths}}, function(err, res) {
           if ( res ) {
@@ -163,23 +195,8 @@
 
             Object.keys(res).forEach(function(key) {
               var iter = res[key];
-              var nkey = iter.className;
-
-              if ( iter && !packages[nkey] ) {
-                iter.type = iter.type || 'application';
-
-                if ( iter.preload ) {
-                  iter.preload.forEach(function(it) {
-                    if ( it.src && !it.src.match(/^(\/)|(http)|(ftp)/) ) {
-                      if ( iter.scope === 'user' ) {
-                        it.src = Utils.pathJoin(iter.path, it.src);
-                      } else {
-                        it.src = Utils.pathJoin(rootURI, key, it.src);
-                      }
-                    }
-                  });
-                }
-                packages[nkey] = iter;
+              if ( iter && !packages[iter.className] ) {
+                packages[iter.className] = checkEntry(key, iter);
               }
             });
           }
