@@ -61,7 +61,6 @@
   var PackageManager = (function() {
     var blacklist = [];
     var packages = {};
-    var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
 
     return Object.seal({
 
@@ -141,10 +140,17 @@
        * @param  {Function} callback      callback
        */
       _loadMetadata: function(callback) {
-        packages = OSjs.Core.getMetadata();
-
         if ( window.location.protocol === 'file:' ) {
-          callback();
+          var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
+          Utils.preload([uri], function(total, failed) {
+            if ( failed.length ) {
+              callback('Failed to load package manifest', failed);
+              return;
+            }
+
+            packages = OSjs.Core.getMetadata();
+            callback();
+          });
           return;
         }
 
@@ -153,6 +159,8 @@
 
         API.call('packages', {action: 'list', args: {paths: paths}}, function(err, res) {
           if ( res ) {
+            packages = {};
+
             Object.keys(res).forEach(function(key) {
               var iter = res[key];
               var nkey = iter.className;
