@@ -72,11 +72,15 @@
       var path = [iter, 'packages.json'].join('/'); // path.join does not work
       _vfs.read(server, {path: path, options: {raw: true}}, function(err, res) {
         if ( !err && res ) {
-          var meta = JSON.parse(res);
-          Object.keys(meta).forEach(function(k) {
-            summed[k] = meta[k];
-            summed[k].scope = 'user';
-          });
+          try {
+            var meta = JSON.parse(res);
+            Object.keys(meta).forEach(function(k) {
+              summed[k] = meta[k];
+              summed[k].scope = 'user';
+            });
+          } catch ( e ) {
+            // TODO: Log!
+          }
         }
         next();
       });
@@ -88,9 +92,7 @@
   function generateUserMetadata(server, paths, cb) {
     paths = paths || [];
 
-    console.log('generate', paths);
     que(paths, function(root, next) {
-      console.log('root', root);
       _vfs.scandir(server, {path: root}, function(err, list) {
         var summed = {};
 
@@ -98,13 +100,12 @@
           var dirname = liter.filename;
 
           if ( liter.type === 'dir' && dirname.substr(0, 1) !== '.' ) {
-            console.log('dir', dirname);
             var path = [root, dirname, 'metadata.json'].join('/'); // path.join does not work
             _vfs.read(server, {path: path, options: {raw: true}}, function(err, res) {
               if ( !err && res ) {
                 var meta = JSON.parse(res);
+                meta.path = root + '/' + dirname;
                 summed[meta.className] = meta;
-                summed[meta.className].path = dirname;
               }
               nnext();
             });
@@ -114,8 +115,9 @@
         }, function() {
           var path = [root, 'packages.json'].join('/'); // path.join does not work
           var data = JSON.stringify(summed);
+          var realPath = _vfs.getRealPath(server, path);
 
-          _fs.write(server, {path: path, data: data, raw: true, rawtype: 'utf8'}, function() {
+          _fs.writeFile(realPath.root, data, function(err) {
             next();
           });
         });
@@ -176,6 +178,8 @@
    *
    * @param   {Object}    server          Server object
    * @param   {Object}    args            API Call Arguments
+   * @param   {String}    [args.scope]    Package scope (user, system or null)
+   * @param   {Array}     [args.paths]    Package paths (for user scope)
    * @param   {Function}  callback        Callback function => fn(error, result)
    *
    * @function cache
@@ -195,6 +199,8 @@
    *
    * @param   {Object}    server          Server object
    * @param   {Object}    args            API Call Arguments
+   * @param   {String}    [args.scope]    Package scope (user, system or null)
+   * @param   {Array}     [args.paths]    Package paths (for user scope)
    * @param   {Function}  callback        Callback function => fn(error, result)
    *
    * @function list
