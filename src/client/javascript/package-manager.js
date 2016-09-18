@@ -303,6 +303,43 @@
       },
 
       /**
+       * Get a list of packges from online repositories
+       *
+       * @function getStorePackages
+       * @memberof OSjs.Core.PackageManager#
+       *
+       * @param {Object}    opts      Options
+       * @param {Function}  callback  Callback => fn(error, result)
+       *
+       * @return {Metadata}
+       */
+      getStorePackages: function(opts, callback) {
+        var sm = OSjs.Core.getSettingsManager();
+        var repos = sm.instance('PackageManager').get('Repositories', []);
+        var entries = [];
+
+        Utils.asyncs(repos, function(url, idx, next) {
+          API.curl({
+            url: url,
+            method: 'GET'
+          }, function(error, result) {
+            if ( !error ) {
+              var jsn = Utils.fixJSON(result.body);
+              if ( jsn instanceof Array ) {
+                entries = entries.concat(jsn.map(function(iter) {
+                  iter._repository = url;
+                  return iter;
+                }));
+              }
+            }
+            next();
+          });
+        }, function() {
+          callback(false, entries);
+        });
+      },
+
+      /**
        * Get package by name
        *
        * @function getPackage
