@@ -1519,6 +1519,8 @@
       writeFile(_path.join(dst, 'combined.css'), combined.css.join('\n'));
       writeFile(_path.join(dst, 'metadata.json'), JSON.stringify(iter, null, 2));
 
+      // TODO: Combine scheme external includes
+
       remove.forEach(function(r) {
         deleteFile(r);
       });
