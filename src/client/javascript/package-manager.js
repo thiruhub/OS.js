@@ -171,7 +171,9 @@
                 if ( iter.preload ) {
                   iter.preload.forEach(function(it) {
                     if ( it.src && !it.src.match(/^(\/)|(http)|(ftp)/) ) {
-                      if ( iter.scope !== 'user' ) { // FIXME: For user packages we can do this with those not starting with /
+                      if ( iter.scope === 'user' ) {
+                        it.src = Utils.pathJoin(iter.path, it.src);
+                      } else {
                         it.src = Utils.pathJoin(rootURI, key, it.src);
                       }
                     }
