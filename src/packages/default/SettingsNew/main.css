@@ -1,0 +1,103 @@
+/*!
+ * OS.js - JavaScript Cloud/Web Desktop Platform
+ *
+ * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+.ApplicationSettingsNewWindow application-window-content {
+  overflow : hidden;
+}
+
+.ApplicationSettingsNewWindow application-window-content gui-expander {
+  margin-bottom : 5px;
+}
+
+.ApplicationSettingsNewWindow application-window-content [data-id="ContainerButtons"],
+.ApplicationSettingsNewWindow application-window-content [data-id="ContainerContent"] {
+  overflow : hidden;
+  display : none;
+}
+
+.ApplicationSettingsNewWindow application-window-content [data-id="SearchPaths"] {
+  min-height : 200px;
+}
+
+.ApplicationSettingsNewWindow application-window-content [data-id="ContainerContent"] > div {
+  overflow : auto;
+  height : 100%;
+  padding : 10px;
+}
+
+.ApplicationSettingsNewWindow application-window-content [data-id="ContainerSelection"] {
+  background : #fff;
+}
+
+.ApplicationSettingsNewWindow application-window-content .ListView {
+  overflow : hidden;
+  height : 100%;
+}
+  .ApplicationSettingsNewWindow application-window-content .ListView > div {
+    background : #f7f7f7;
+    min-height : 32px;
+    padding : 10px;
+    pointer-events: none;
+  }
+  .ApplicationSettingsNewWindow application-window-content .ListView > div:nth-child(2n+1) {
+    background : #fff;
+  }
+    .ApplicationSettingsNewWindow application-window-content .ListView > div > ul {
+      list-style : none;
+      margin : 0;
+      padding : 0;
+      pointer-events: none;
+    }
+      .ApplicationSettingsNewWindow application-window-content .ListView > div > ul > li {
+        display : inline-block;
+        margin : 0;
+        padding : 10px;
+        text-align : center;
+        cursor : pointer;
+        width : 70px;
+        height : 70px;
+        pointer-events: all;
+      }
+      .ApplicationSettingsNewWindow application-window-content .ListView > div > ul > li:hover {
+        background : #eee;
+      }
+        .ApplicationSettingsNewWindow application-window-content .ListView > div > ul > li * {
+          pointer-events : none;
+        }
+        .ApplicationSettingsNewWindow application-window-content .ListView > div > ul > li > span {
+          display : block;
+        }
+
+    .ApplicationSettingsNewWindow application-window-content .ListView > div > span {
+      display : block;
+      font-weight : bold;
+      margin-bottom : 5px;
+      pointer-events: none;
+    }
