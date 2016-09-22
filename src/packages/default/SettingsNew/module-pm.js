@@ -27,8 +27,64 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, PM, GUI) {
+(function(Application, Window, Utils, API, PM, GUI, VFS) {
   'use strict';
+
+  var list, hidden;
+
+  function updateEnabledStates() {
+    var pacman = OSjs.Core.getPackageManager();
+    var sm = OSjs.Core.getSettingsManager();
+    var pool = sm.instance('Packages', {hidden: []});
+
+    list = pacman.getPackages(false);
+    hidden = pool.get('hidden');
+  }
+
+  function renderInstalled(win, scheme) {
+    win._find('ButtonUninstall').set('disabled', true);
+
+    updateEnabledStates();
+
+    var view = win._find('InstalledPackages');
+    var rows = [];
+
+    Object.keys(list).forEach(function(k, idx) {
+      rows.push({
+        index: idx,
+        value: k,
+        columns: [
+          {label: ''},
+          {label: k},
+          {label: list[k].scope},
+          {label: list[k].name}
+        ]
+      });
+    });
+
+    view.clear();
+    view.add(rows);
+
+    view.$element.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
+      var col = row.children[0];
+      var name = row.getAttribute('data-value');
+      var enabled = hidden.indexOf(name) >= 0;
+
+      scheme.create(win, 'gui-checkbox', {value: enabled}, col).on('change', function(ev) {
+        var idx = hidden.indexOf(name);
+
+        if ( ev.detail ) {
+          if ( idx < 0 ) {
+            hidden.push(name);
+          }
+        } else {
+          if ( idx >= 0 ) {
+            hidden.splice(idx, 1);
+          }
+        }
+      });
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
@@ -42,16 +98,87 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      renderInstalled(win, scheme);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      var pacman = OSjs.Core.getPackageManager();
+      var sm = OSjs.Core.getSettingsManager();
+      var pool = sm.instance('Packages', {hidden: []});
+
+      win._find('ButtonUninstall').on('click', function() {
+        var selected = win._find('InstalledPackages').get('selected');
+        if ( selected ) {
+          var pkg = pacman.getPackage(selected[0].data);
+          if ( pkg && pkg.scope === 'user' ) {
+            win._toggleLoading(true);
+
+            var file = new VFS.File(pkg.path);
+            pacman.uninstall(file, function(e) {
+              win._toggleLoading(false);
+              renderInstalled(win, scheme);
+
+              if ( e ) {
+                alert(e);
+              }
+            });
+          }
+        }
+      });
+
+      win._find('InstalledPackages').on('select', function(ev) {
+        var d = true;
+        var e = ev.detail.entries || [];
+        if ( e.length ) {
+          var pkg = pacman.getPackage(e[0].data);
+          if ( pkg && pkg.scope === 'user' ) {
+            d = false;
+          }
+        }
+
+        win._find('ButtonUninstall').set('disabled', d);
+      });
+
+      win._find('ButtonSaveHidden').on('click', function() {
+        win._toggleLoading(true);
+        pool.set('hidden', hidden, function() {
+          win._toggleLoading(false);
+        });
+      });
+
+      win._find('ButtonRegen').on('click', function() {
+        win._toggleLoading(true);
+        pacman.generateUserMetadata(function() {
+          win._toggleLoading(false);
+
+          renderInstalled(win, scheme);
+        });
+      });
+
+      win._find('ButtonZipInstall').on('click', function() {
+        win._toggleDisabled(true);
+
+        API.createDialog('File', {
+          filter: ['application/zip']
+        }, function(ev, button, result) {
+          if ( button !== 'ok' || !result ) {
+            win._toggleDisabled(false);
+          } else {
+            OSjs.Core.getPackageManager().install(result, true, function(e) {
+              win._toggleDisabled(false);
+              renderInstalled(win, scheme);
+
+              if ( e ) {
+                alert(e);
+              }
+            });
+          }
+        }, win);
+      });
     },
 
-    load: function() {
-    },
-
-    save: function() {
+    save: function(win, scheme, settings, wm) {
     }
   };
 
@@ -64,4 +191,4 @@
   OSjs.Applications.ApplicationSettingsNew.Modules = OSjs.Applications.ApplicationSettingsNew.Modules || {};
   OSjs.Applications.ApplicationSettingsNew.Modules.PM = module;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.PM, OSjs.GUI);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.PM, OSjs.GUI, OSjs.VFS);

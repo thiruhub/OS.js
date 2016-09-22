@@ -189,7 +189,7 @@
       if ( mod ) {
         mod.style.display = 'block';
         var settings = Utils.cloneObject(wm.getSettings());
-        found.update(this, this._scheme, settings, wm);
+        found.update(this, this._scheme, settings, wm, true);
 
         _d(false);
         this._setTitle(found.name, true);

@@ -1,17 +1,14 @@
 <div data-module="Panel">
-  <gui-tabs>
-    <gui-tab-container data-id="TabPanelAppearance" data-label="Appearance">
-      <gui-fragment data-fragment-id="TabPanelAppearance"></gui-fragment>
-    </gui-tab-container>
-
-    <gui-tab-container data-id="TabPanelItems" data-label="Items">
-      <gui-fragment data-fragment-id="TabPanelItems"></gui-fragment>
-    </gui-tab-container>
-  </gui-tabs>
+  <gui-expander data-label="LBL_OPTIONS">
+    <gui-fragment data-fragment-id="ModulePanelAppearance"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="LBL_ITEMS">
+    <gui-fragment data-fragment-id="ModulePanelItems"></gui-fragment>
+  </gui-expander>
 
 </div>
 
-<application-fragment data-id="TabPanelAppearance">
+<application-fragment data-id="ModulePanelAppearance">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-label>Position</gui-label>
@@ -45,10 +42,9 @@
   </gui-vbox>
 </application-fragment>
 
-<application-fragment data-id="TabPanelItems">
+<application-fragment data-id="ModulePanelItems">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="1">
-      <gui-label>Position</gui-label>
       <gui-list-view data-id="PanelItems" data-multiple="false"></gui-list-view>
     </gui-vbox-container>
 
