@@ -42,6 +42,7 @@
   display : none;
 }
 
+.ApplicationSettingsNewWindow application-window-content [data-id="PanelItems"],
 .ApplicationSettingsNewWindow application-window-content [data-id="SearchPaths"] {
   min-height : 200px;
 }

@@ -42,16 +42,21 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      var user = OSjs.Core.getHandler().getUserData();
+
+      win._find('UserID').set('value', user.id);
+      win._find('UserName').set('value', user.name);
+      win._find('UserUsername').set('value', user.username);
+      win._find('UserGroups').set('value', user.groups);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+
     },
 
-    load: function() {
-    },
-
-    save: function() {
+    save: function(win, scheme, settings, wm) {
     }
   };
 

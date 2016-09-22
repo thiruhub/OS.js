@@ -30,6 +30,69 @@
 (function(Application, Window, Utils, API, Panel, GUI) {
   'use strict';
 
+  var panelItems = [];
+  var items = [];
+  var max = 0;
+
+  function openOptions(wm, idx) {
+    // FIXME
+    try {
+      wm.panels[0]._items[idx].openSettings();
+    } catch ( e ) {}
+  }
+
+  function checkSelection(win, idx) {
+    var hasOptions = true;
+
+    try {
+      var it = items[panel.items[idx].name];
+      hasOptions = it.HasOptions === true;
+    } catch ( e ) {}
+
+    win._find('PanelButtonOptions').set('disabled', idx < 0 || !hasOptions);
+    win._find('PanelButtonRemove').set('disabled', idx < 0);
+    win._find('PanelButtonUp').set('disabled', idx <= 0);
+    win._find('PanelButtonDown').set('disabled', idx < 0 || idx >= max);
+  }
+
+  function movePanelItem(win, index, pos) {
+    var value = panelItems[index];
+    var newIndex = index + pos;
+    panelItems.splice(index, 1);
+    panelItems.splice(newIndex, 0, value);
+    renderItems(win, newIndex);
+  }
+
+  function renderItems(win, setSelected) {
+    var list = [];
+
+    panelItems.forEach(function(i, idx) {
+      var name = i.name;
+
+      if ( items[name] ) {
+        list.push({
+          value: idx,
+          columns: [{
+            icon: API.getIcon(items[name].Icon),
+            label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
+          }]
+        });
+      }
+    });
+    max = panelItems.length - 1;
+
+    var view = win._find('PanelItems');
+    view.clear();
+    view.add(list);
+
+    if ( typeof setSelected !== 'undefined' ) {
+      view.set('selected', setSelected);
+      checkSelection(win, setSelected);
+    } else {
+      checkSelection(win, -1);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
   /////////////////////////////////////////////////////////////////////////////
@@ -42,16 +105,129 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      var panel = settings.panels[0];
+      var opacity = 85;
+      if ( typeof panel.options.opacity === 'number' ) {
+        opacity = panel.options.opacity;
+      }
+
+      win._find('PanelPosition').set('value', panel.options.position);
+      win._find('PanelAutoHide').set('value', panel.options.autohide);
+      win._find('PanelOntop').set('value', panel.options.ontop);
+      win._find('PanelBackgroundColor').set('value', panel.options.background || '#101010');
+      win._find('PanelForegroundColor').set('value', panel.options.foreground || '#ffffff');
+      win._find('PanelOpacity').set('value', opacity);
+
+      //renderItems(win);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+
+      var panel = settings.panels[0];
+      var panelPositions = [
+        {value: 'top',    label: API._('LBL_TOP')},
+        {value: 'bottom', label: API._('LBL_BOTTOM')}
+      ];
+
+      panelItems = panel.items || [];
+      items = OSjs.Core.getPackageManager().getPackage('CoreWM').panelItems;
+
+      // Style
+      win._find('PanelPosition').add(panelPositions);
+
+      win._find('PanelBackgroundColor').on('open', function(ev) {
+        self._toggleDisabled(true);
+
+        API.createDialog('Color', {
+          color: ev.detail
+        }, function(ev, button, result) {
+          self._toggleDisabled(false);
+          if ( button === 'ok' && result ) {
+            win._find('PanelBackgroundColor').set('value', result.hex);
+          }
+        }, self);
+      });
+
+      win._find('PanelForegroundColor').on('open', function(ev) {
+        self._toggleDisabled(true);
+
+        API.createDialog('Color', {
+          color: ev.detail
+        }, function(ev, button, result) {
+          self._toggleDisabled(false);
+          if ( button === 'ok' && result ) {
+            win._find('PanelForegroundColor').set('value', result.hex);
+          }
+        }, self);
+      });
+
+      // Items
+      win._find('PanelItems').on('select', function(ev) {
+        if ( ev && ev.detail && ev.detail.entries && ev.detail.entries.length ) {
+          checkSelection(win, ev.detail.entries[0].index);
+        }
+      });
+
+      win._find('PanelButtonAdd').on('click', function() {
+        self._toggleDisabled(true);
+        self._app.panelItemsDialog(function(ev, result) {
+          self._toggleDisabled(false);
+
+          if ( result ) {
+            panelItems.push({name: result.data});
+            renderItems(win);
+          }
+        });
+      });
+
+      win._find('PanelButtonRemove').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          panelItems.splice(selected[0].index, 1);
+          renderItems(win);
+        }
+      });
+
+      win._find('PanelButtonUp').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          movePanelItem(win, selected[0].index, -1);
+        }
+      });
+      win._find('PanelButtonDown').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          movePanelItem(win, selected[0].index, 1);
+        }
+      });
+
+      win._find('PanelButtonReset').on('click', function() {
+        var defaults = wm.getDefaultSetting('panels');
+        panelItems = defaults[0].items;
+        renderItems(win);
+      });
+
+      win._find('PanelButtonOptions').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          openOptions(wm, selected[0].index);
+        }
+      });
     },
 
-    load: function() {
-    },
+    save: function(win, scheme, settings, wm) {
+      settings.panels = settings.panels || [{}];
+      settings.panels[0].options = settings.panels[0].options || {};
 
-    save: function() {
+      settings.panels[0].options.position = win._find('PanelPosition').get('value');
+      settings.panels[0].options.autohide = win._find('PanelAutoHide').get('value');
+      settings.panels[0].options.ontop = win._find('PanelOntop').get('value');
+      settings.panels[0].options.background = win._find('PanelBackgroundColor').get('value') || '#101010';
+      settings.panels[0].options.foreground = win._find('PanelForegroundColor').get('value') || '#ffffff';
+      settings.panels[0].options.opacity = win._find('PanelOpacity').get('value');
+      settings.panels[0].items = panelItems;
     }
   };
 

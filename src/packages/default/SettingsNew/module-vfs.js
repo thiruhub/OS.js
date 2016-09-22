@@ -51,11 +51,11 @@
       _: OSjs.Applications.ApplicationFileManager._
     });
 
-    scheme.find(this, 'ButtonClose').on('click', function() {
+    win._find('ButtonClose').on('click', function() {
       self._close();
     });
 
-    scheme.find(this, 'ButtonOK').on('click', function() {
+    win._find('ButtonOK').on('click', function() {
       var conn = {
         type: scheme.find(self, 'MountType').get('value'),
         name: scheme.find(self, 'MountName').get('value'),
@@ -99,16 +99,31 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+      var scandirOptions = vfsOptions.scandir || {};
+
+      win._find('ShowFileExtensions').set('value', scandirOptions.showFileExtensions === true);
+      win._find('ShowHiddenFiles').set('value', scandirOptions.showHiddenFiles === true);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+
     },
 
-    load: function() {
-    },
+    save: function(win, scheme, settings, wm) {
+      var vfsSettings = {
+        scandir: {
+          showHiddenFiles: win._find('ShowHiddenFiles').get('value'),
+          showFileExtensions: win._find('ShowFileExtensions').get('value')
+        }
+      };
 
-    save: function() {
+      return function(cb) {
+        var sm = OSjs.Core.getSettingsManager();
+        sm.instance('VFS').set(null, vfsSettings, cb, false);
+      };
     }
   };
 

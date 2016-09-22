@@ -42,16 +42,24 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      var user = OSjs.Core.getHandler().getUserData();
+      var config = OSjs.Core.getConfig();
+      var locales = config.Languages;
+
+      win._find('UserLocale').clear().add(Object.keys(locales).filter(function(l) {
+        return !!OSjs.Locales[l];
+      }).map(function(l) {
+        return {label: locales[l], value: l};
+      })).set('value', API.getLocale());
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+
     },
 
-    load: function() {
-    },
-
-    save: function() {
+    save: function(win, scheme, settings, wm) {
     }
   };
 

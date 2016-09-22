@@ -42,16 +42,25 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      win._find('SoundThemeName').set('value', settings.sounds);
+      win._find('EnableSounds').set('value', settings.enableSounds);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+      var soundThemes = (function(tmp) {
+        return Object.keys(tmp).map(function(t) {
+          return {label: tmp[t], value: t};
+        });
+      })(wm.getSoundThemes());
+
+      win._find('SoundThemeName').add(soundThemes);
     },
 
-    load: function() {
-    },
-
-    save: function() {
+    save: function(win, scheme, settings, wm) {
+      settings.sounds = win._find('SoundThemeName').get('value');
+      settings.enableSounds = win._find('EnableSounds').get('value');
     }
   };
 

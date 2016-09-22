@@ -69,6 +69,7 @@
   ApplicationSettingsNewWindow.prototype.init = function(wmRef, app, scheme) {
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
+    var wm = OSjs.Core.getWindowManager();
 
     // Load and render `scheme.html` file
     scheme.render(this, 'SettingsNewWindow', root);
@@ -113,7 +114,10 @@
 
         containers[m.group].appendChild(c);
 
-        m.render(tmpcontent);
+        var settings = Utils.cloneObject(wm.getSettings());
+        m.render(self, scheme, tmpcontent, settings, wm);
+        m.update(self, scheme, settings, wm);
+        m._inited = true;
       }
     });
 
@@ -150,14 +154,12 @@
   };
 
   ApplicationSettingsNewWindow.prototype.onWindowInited = function(modules) {
-    var root = this._$element;
-    modules.forEach(function(m) {
-      m.render(root);
-    });
   };
 
   ApplicationSettingsNewWindow.prototype.onModuleSelect = function(name) {
+    var wm = OSjs.Core.getWindowManager();
     var root = this._$element;
+    var self = this;
 
     function _d(d) {
       root.querySelector('[data-id="ContainerSelection"]').style.display = d ? 'block' : 'none';
@@ -173,34 +175,56 @@
 
     this._setTitle(null);
 
-    if ( name === null ) {
-      return;
-    }
-
     var found;
-    this._app.modules.forEach(function(m) {
-      if ( !found && m.name === name ) {
-        found = m;
-      }
-    });
+    if ( name ) {
+      this._app.modules.forEach(function(m) {
+        if ( !found && m.name === name ) {
+          found = m;
+        }
+      });
+    }
 
     if ( found ) {
       var mod = root.querySelector('div[data-module="' + found.name +  '"]');
       if ( mod ) {
         mod.style.display = 'block';
-        found.select();
+        var settings = Utils.cloneObject(wm.getSettings());
+        found.update(this, this._scheme, settings, wm);
 
         _d(false);
         this._setTitle(found.name, true);
+      }
+    } else {
+      if ( !name ) { // Resets values to original (or current)
+        var settings = Utils.cloneObject(wm.getSettings());
+        this._app.modules.forEach(function(m) {
+          if ( m._inited ) {
+            m.update(self, self._scheme, settings, wm);
+          }
+        });
       }
     }
   };
 
   ApplicationSettingsNewWindow.prototype.onButtonOK = function() {
     var self = this;
+    var settings = {};
+    var wm = OSjs.Core.getWindowManager();
+    var saves = [];
+
+    this._app.modules.forEach(function(m) {
+      if ( m._inited ) {
+        var res = m.save(self, self._scheme, settings, wm);
+        if ( typeof res === 'function' ) {
+          saves.push(res);
+        }
+      }
+    });
+
+    console.warn('SAVE', settings, saves);
 
     this._toggleLoading(true);
-    this._app.saveSettings(function() {
+    this._app.saveSettings(settings, saves, function() {
       self._toggleLoading(false);
       self.onModuleSelect(null);
     });
@@ -208,8 +232,6 @@
 
   ApplicationSettingsNewWindow.prototype.onButtonCancel = function() {
     this.onModuleSelect(null);
-
-    // TODO: Re-render module and reset values
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -223,13 +245,13 @@
 
     this.modules = Object.keys(registered).map(function(name) {
       var opts = Utils.argumentDefaults(registered[name], {
+        _inited: false,
         name: name,
         group: DEFAULT_GROUP,
         icon: 'status/error.png',
         init: function() {},
-        select: function() {},
+        update: function() {},
         render: function() {},
-        load: function() {},
         save: function() {}
       });
 
@@ -273,16 +295,12 @@
     });
   };
 
-  ApplicationSettingsNew.prototype.saveSettings = function(cb) {
-    var settings = {};
-
+  ApplicationSettingsNew.prototype.saveSettings = function(settings, saves, cb) {
     var wm = OSjs.Core.getWindowManager();
-    //var sm = OSjs.Core.getSettingsManager();
-
     wm.applySettings(settings, false, function() {
-      //sm.instance('VFS').set(null, vfsSettings, false, false);
-      //sm.instance('SearchEngine').set(null, searchSettings, true, false);
-      cb();
+      Utils.asyncs(saves, function(iter, idx, next) {
+        iter(next);
+      }, cb);
     }, false);
   };
 

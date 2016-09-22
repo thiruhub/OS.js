@@ -30,6 +30,20 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  function updateLabel(win, lbl, value) {
+    //var _ = OSjs.Applications.ApplicationSettings._;
+    var _ = API._; // FIXME
+
+    var map = {
+      DesktopMargin: 'Desktop Margin ({0}px)',
+      CornerSnapping: 'Desktop Corner Snapping ({0}px)',
+      WindowSnapping: 'Window Snapping ({0}px)'
+    };
+
+    var label = Utils.format(_(map[lbl]), value);
+    win._find(lbl + 'Label').set('value', label);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
   /////////////////////////////////////////////////////////////////////////////
@@ -42,16 +56,47 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      win._find('EnableAnimations').set('value', settings.animations);
+      win._find('EnableTouchMenu').set('value', settings.useTouchMenu);
+
+      //win._find('EnableWindowSwitcher').set('value', settings.enableSwitcher);
+
+      win._find('DesktopMargin').set('value', settings.desktopMargin);
+      win._find('CornerSnapping').set('value', settings.windowCornerSnap);
+      win._find('WindowSnapping').set('value', settings.windowSnap);
+
+      updateLabel(win, 'DesktopMargin', settings.desktopMargin);
+      updateLabel(win, 'CornerSnapping', settings.windowCornerSnap);
+      updateLabel(win, 'WindowSnapping', settings.windowSnap);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+
+      win._find('DesktopMargin').on('change', function(ev) {
+        updateLabel(win, 'DesktopMargin', ev.detail);
+      });
+      win._find('CornerSnapping').on('change', function(ev) {
+        updateLabel(win, 'CornerSnapping', ev.detail);
+      });
+      win._find('WindowSnapping').on('change', function(ev) {
+        updateLabel(win, 'WindowSnapping', ev.detail);
+      });
+
+      win._find('EnableIconView').set('value', settings.enableIconView);
+      win._find('EnableIconViewInvert').set('value', settings.invertIconViewColor);
     },
 
-    load: function() {
-    },
-
-    save: function() {
+    save: function(win, scheme, settings, wm) {
+      settings.animations = win._find('EnableAnimations').get('value');
+      settings.useTouchMenu = win._find('EnableTouchMenu').get('value');
+      //settings.enableSwitcher = win._find('EnableWindowSwitcher').get('value');
+      settings.desktopMargin = win._find('DesktopMargin').get('value');
+      settings.windowCornerSnap = win._find('CornerSnapping').get('value');
+      settings.windowSnap = win._find('WindowSnapping').get('value');
+      settings.enableIconView = win._find('EnableIconView').get('value');
+      settings.invertIconViewColor = win._find('EnableIconViewInvert').get('value');
     }
   };
 

@@ -42,16 +42,17 @@
     init: function() {
     },
 
-    select: function() {
+    update: function(win, scheme, settings, wm) {
+      win._find('EnableHotkeys').set('value', settings.enableHotkeys);
     },
 
-    render: function(root) {
+    render: function(win, scheme, root, settings, wm) {
+      console.warn(settings);
+
     },
 
-    load: function() {
-    },
-
-    save: function() {
+    save: function(win, scheme, settings, wm) {
+      settings.enableHotkeys = win._find('EnableHotkeys').get('value');
     }
   };
 
