@@ -113,7 +113,7 @@
 
     render: function(win, scheme, root, settings, wm) {
       win._find('ButtonStoreRefresh').on('click', function() {
-        renderStore();
+        renderStore(win);
       });
 
       win._find('ButtonStoreInstall').on('click', function() {
