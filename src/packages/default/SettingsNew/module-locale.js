@@ -43,7 +43,6 @@
     },
 
     update: function(win, scheme, settings, wm) {
-      var user = OSjs.Core.getHandler().getUserData();
       var config = OSjs.Core.getConfig();
       var locales = config.Languages;
 
@@ -55,8 +54,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-
     },
 
     save: function(win, scheme, settings, wm) {

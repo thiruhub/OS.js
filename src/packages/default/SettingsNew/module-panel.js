@@ -123,8 +123,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-
       var panel = settings.panels[0];
       var panelPositions = [
         {value: 'top',    label: API._('LBL_TOP')},

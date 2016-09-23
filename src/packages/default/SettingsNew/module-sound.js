@@ -48,7 +48,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
       var soundThemes = (function(tmp) {
         return Object.keys(tmp).map(function(t) {
           return {label: tmp[t], value: t};

@@ -69,8 +69,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-
       function openAddDialog() {
         win._toggleDisabled(true);
 

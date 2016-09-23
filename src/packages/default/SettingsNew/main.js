@@ -59,8 +59,6 @@
       height: 400,
       allow_resize: true
     }, app, scheme]);
-
-    this.currentModule = null;
   }
 
   ApplicationSettingsNewWindow.prototype = Object.create(Window.prototype);
@@ -204,6 +202,8 @@
         });
       }
     }
+
+    this._app.setModule(found);
   };
 
   ApplicationSettingsNewWindow.prototype.onButtonOK = function() {
@@ -220,8 +220,6 @@
         }
       }
     });
-
-    console.warn('SAVE', settings, saves);
 
     this._toggleLoading(true);
     this._app.saveSettings(settings, saves, function() {
@@ -241,7 +239,11 @@
   function ApplicationSettingsNew(args, metadata) {
     Application.apply(this, ['ApplicationSettingsNew', args, metadata]);
 
+    var self = this;
     var registered = OSjs.Applications.ApplicationSettingsNew.Modules;
+
+    this.watches = {};
+    this.currentModule = null;
 
     this.modules = Object.keys(registered).map(function(name) {
       var opts = Utils.argumentDefaults(registered[name], {
@@ -269,7 +271,20 @@
     });
 
     this.modules.forEach(function(m) {
-      m.init();
+      m.init(self);
+
+      if ( m.watch ) {
+        m.watch.forEach(function(w) {
+          self.watches[m.name] = OSjs.Core.getSettingsManager().watch(w, function() {
+            var win = self._getMainWindow();
+            if ( m && win ) {
+              if ( self.currentModule && self.currentModule.name === m.name ) {
+                win.onModuleSelect(m.name);
+              }
+            }
+          });
+        });
+      }
     });
   }
 
@@ -280,6 +295,13 @@
     // This is where you remove objects, dom elements etc attached to your
     // instance. You can remove this if not used.
     if ( Application.prototype.destroy.apply(this, arguments) ) {
+
+      var self = this;
+      Object.keys(this.watches).forEach(function(k) {
+        OSjs.Core.getSettingsManager().unwatch(self.watches[k]);
+      });
+      this.watches = {};
+
       return true;
     }
     return false;
@@ -312,6 +334,10 @@
     }
 
     this._addWindow(new MountWindow(this, this.__metadata, this.__scheme));
+  };
+
+  ApplicationSettingsNew.prototype.setModule = function(m) {
+    this.currentModule = m;
   };
 
   /////////////////////////////////////////////////////////////////////////////

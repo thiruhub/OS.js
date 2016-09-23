@@ -52,8 +52,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-
     },
 
     save: function(win, scheme, settings, wm) {

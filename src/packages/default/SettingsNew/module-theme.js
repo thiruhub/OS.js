@@ -38,6 +38,7 @@
     group: 'personal',
     name: 'Theme',
     icon: 'apps/background.png',
+    watch: ['CoreWM'],
 
     init: function() {
     },
@@ -58,9 +59,7 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-      //var _ = OSjs.Applications.ApplicationSettings._;
-      var _ = API._; // FIXME
+      var _ = OSjs.Applications.ApplicationSettingsNew._;
 
       function _createDialog(n, a, done) {
         win._toggleDisabled(true);

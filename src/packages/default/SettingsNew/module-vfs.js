@@ -48,7 +48,7 @@
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'MountWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationFileManager._
+      _: OSjs.Applications.ApplicationSettingsNew._
     });
 
     win._find('ButtonClose').on('click', function() {
@@ -95,8 +95,9 @@
     group: 'system',
     name: 'VFS',
     icon: 'devices/harddrive.png',
+    watch: ['VFS'],
 
-    init: function() {
+    init: function(app) {
     },
 
     update: function(win, scheme, settings, wm) {
@@ -108,8 +109,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-
     },
 
     save: function(win, scheme, settings, wm) {

@@ -5,6 +5,7 @@
   "icon":       "categories/applications-system.png",
   "singular": true,
   "preload":    [
+    {"src": "locale.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "module-theme.js", "type": "javascript"},
     {"src": "module-desktop.js", "type": "javascript"},

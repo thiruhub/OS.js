@@ -31,8 +31,7 @@
   'use strict';
 
   function updateLabel(win, lbl, value) {
-    //var _ = OSjs.Applications.ApplicationSettings._;
-    var _ = API._; // FIXME
+    var _ = OSjs.Applications.ApplicationSettingsNew._;
 
     var map = {
       DesktopMargin: 'Desktop Margin ({0}px)',
@@ -52,8 +51,9 @@
     group: 'personal',
     name: 'Desktop',
     icon: 'devices/display.png',
+    watch: ['CoreWM'],
 
-    init: function() {
+    init: function(app) {
     },
 
     update: function(win, scheme, settings, wm) {
@@ -72,8 +72,6 @@
     },
 
     render: function(win, scheme, root, settings, wm) {
-      console.warn(settings);
-
       win._find('DesktopMargin').on('change', function(ev) {
         updateLabel(win, 'DesktopMargin', ev.detail);
       });
