@@ -68,9 +68,10 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
     var wm = OSjs.Core.getWindowManager();
+    var _ = OSjs.Applications.ApplicationSettingsNew._;
 
     // Load and render `scheme.html` file
-    scheme.render(this, 'SettingsNewWindow', root);
+    scheme.render(this, 'SettingsNewWindow', root, null, null, {_: _});
 
     this._find('ButtonOK').son('click', this, this.onButtonOK);
     this._find('ButtonCancel').son('click', this, this.onButtonCancel);
@@ -87,7 +88,7 @@
       var h = document.createElement('span');
       var d = document.createElement('div');
 
-      h.appendChild(document.createTextNode(_groups[k].label));
+      h.appendChild(document.createTextNode(_(_groups[k].label)));
 
       containers[k] = c;
 
@@ -103,7 +104,7 @@
         i.setAttribute('title', m.name);
 
         var s = document.createElement('span');
-        s.appendChild(document.createTextNode(m.name));
+        s.appendChild(document.createTextNode(_(m.name)));
 
         var c = document.createElement('li');
         c.setAttribute('data-module', String(m.name));

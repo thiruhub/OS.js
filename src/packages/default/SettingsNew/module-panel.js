@@ -58,7 +58,9 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'PanelSettingWindow', root);
+    scheme.render(this, 'PanelSettingWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationSettingsNew._
+    });
 
     var pacman = OSjs.Core.getPackageManager();
     var avail = pacman.getPackage('CoreWM').panelItems;
@@ -85,6 +87,7 @@
 
     return root;
   };
+
   PanelItemDialog.prototype._close = function() {
     if ( !this.closed ) {
       this.callback('cancel');

@@ -36,7 +36,7 @@
 
   var module = {
     group: 'personal',
-    name: 'Sound',
+    name: 'Sounds',
     icon: 'status/stock_volume-max.png',
 
     init: function() {
@@ -70,6 +70,6 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationSettingsNew = OSjs.Applications.ApplicationSettingsNew || {};
   OSjs.Applications.ApplicationSettingsNew.Modules = OSjs.Applications.ApplicationSettingsNew.Modules || {};
-  OSjs.Applications.ApplicationSettingsNew.Modules.Sound = module;
+  OSjs.Applications.ApplicationSettingsNew.Modules.Sounds = module;
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

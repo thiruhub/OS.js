@@ -3,6 +3,7 @@
   "name":       "Settings",
   "mime":       null,
   "icon":       "categories/applications-system.png",
+  "category": "system",
   "singular": true,
   "preload":    [
     {"src": "locale.js", "type": "javascript"},
