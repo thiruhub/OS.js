@@ -34,6 +34,68 @@
   var items = [];
   var max = 0;
 
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function PanelItemDialog(app, metadata, scheme, callback) {
+    Window.apply(this, ['ApplicationSettingsPanelItemsWindow', {
+      icon: metadata.icon,
+      title: metadata.name + ' - Panel Items',
+      width: 400,
+      height: 300
+    }, app, scheme]);
+
+    this.callback = callback;
+    this.closed = false;
+  }
+
+  PanelItemDialog.prototype = Object.create(Window.prototype);
+  PanelItemDialog.constructor = Window;
+
+  PanelItemDialog.prototype.init = function(wm, app, scheme) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'PanelSettingWindow', root);
+
+    var pacman = OSjs.Core.getPackageManager();
+    var avail = pacman.getPackage('CoreWM').panelItems;
+    scheme.find(this, 'List').clear().add(Object.keys(avail).map(function(i, idx) {
+      return {
+        value: i,
+        columns: [{
+          icon: API.getIcon(avail[i].Icon),
+          label: Utils.format('{0} ({1})', avail[i].Name, avail[i].Description)
+        }]
+      };
+    }));
+
+    scheme.find(this, 'ButtonOK').on('click', function() {
+      self.closed = true;
+      var selected = scheme.find(self, 'List').get('selected');
+      self.callback('ok', selected.length ? selected[0] : null);
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonCancel').on('click', function() {
+      self._close();
+    });
+
+    return root;
+  };
+  PanelItemDialog.prototype._close = function() {
+    if ( !this.closed ) {
+      this.callback('cancel');
+    }
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
   function openOptions(wm, idx) {
     // FIXME
     try {
@@ -93,6 +155,26 @@
     }
   }
 
+  function createDialog(win, scheme, cb) {
+    if ( scheme ) {
+      var app = win._app;
+      win._addChild(new PanelItemDialog(app, app.__metadata, scheme, cb), true, true);
+    }
+  }
+
+  function createColorDialog(win, color, cb) {
+    win._toggleDisabled(true);
+
+    API.createDialog('Color', {
+      color: color
+    }, function(ev, button, result) {
+      win._toggleDisabled(false);
+      if ( button === 'ok' && result ) {
+        cb(result.hex);
+      }
+    }, win);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
   /////////////////////////////////////////////////////////////////////////////
@@ -119,49 +201,31 @@
       win._find('PanelForegroundColor').set('value', panel.options.foreground || '#ffffff');
       win._find('PanelOpacity').set('value', opacity);
 
-      //renderItems(win);
+      items = OSjs.Core.getPackageManager().getPackage('CoreWM').panelItems;
+
+      panelItems = panel.items || [];
+
+      renderItems(win);
     },
 
     render: function(win, scheme, root, settings, wm) {
-      var panel = settings.panels[0];
-      var panelPositions = [
+      win._find('PanelPosition').add([
         {value: 'top',    label: API._('LBL_TOP')},
         {value: 'bottom', label: API._('LBL_BOTTOM')}
-      ];
-
-      panelItems = panel.items || [];
-      items = OSjs.Core.getPackageManager().getPackage('CoreWM').panelItems;
-
-      // Style
-      win._find('PanelPosition').add(panelPositions);
+      ]);
 
       win._find('PanelBackgroundColor').on('open', function(ev) {
-        self._toggleDisabled(true);
-
-        API.createDialog('Color', {
-          color: ev.detail
-        }, function(ev, button, result) {
-          self._toggleDisabled(false);
-          if ( button === 'ok' && result ) {
-            win._find('PanelBackgroundColor').set('value', result.hex);
-          }
-        }, self);
+        createColorDialog(ev.detail, function(result) {
+          win._find('PanelBackgroundColor').set('value', result);
+        });
       });
 
       win._find('PanelForegroundColor').on('open', function(ev) {
-        self._toggleDisabled(true);
-
-        API.createDialog('Color', {
-          color: ev.detail
-        }, function(ev, button, result) {
-          self._toggleDisabled(false);
-          if ( button === 'ok' && result ) {
-            win._find('PanelForegroundColor').set('value', result.hex);
-          }
-        }, self);
+        createColorDialog(ev.detail, function(result) {
+          win._find('PanelForegroundColor').set('value', result);
+        });
       });
 
-      // Items
       win._find('PanelItems').on('select', function(ev) {
         if ( ev && ev.detail && ev.detail.entries && ev.detail.entries.length ) {
           checkSelection(win, ev.detail.entries[0].index);
@@ -169,9 +233,9 @@
       });
 
       win._find('PanelButtonAdd').on('click', function() {
-        self._toggleDisabled(true);
-        self._app.panelItemsDialog(function(ev, result) {
-          self._toggleDisabled(false);
+        win._toggleDisabled(true);
+        createDialog(win, scheme, function(ev, result) {
+          win._toggleDisabled(false);
 
           if ( result ) {
             panelItems.push({name: result.data});
