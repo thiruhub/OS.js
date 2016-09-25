@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Development Introduction - OS.js Documentation</title>
+    <title>Developer Introduction - OS.js Documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="description" content="OS.js -- Development Introduction" />
+    <meta name="description" content="OS.js -- Developer Introduction" />
     <meta name="keywords" content="OS.js,Documentation,Client,Server,API,Tutorial,Tutorials,Manual,Manuals" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -86,103 +86,23 @@
 
     <content>
 
-<h1>Development Introduction</h1>
-<div>
-  <p>
-    There's some manual pages that explains some aspects of the development process of OS.js:
-  </p>
-  <ul>
-    <li><a href="/doc/manuals/man-configuration.html">Configuration system</a></li>
-    <li><a href="/doc/manuals/man-build-grunt.html">Build system</a></li>
-  </ul>
-  <p>
-    Below you can find some information on how to get started with developing for OS.js:
-  </p>
+<h1>Developer Introduction</h1>
+<p>
+  This is an introduction to OS.js development. It assumes that you have at least some experience with common web technologies and common tools, like HTML, CSS, JavaScript, Grunt, LESS and Git.
+</p>
+<ul>
+  <li><a href="#section-codebase">Codebase</a></li>
+  <li><a href="#section-env">Setting up a developer environment</a></li>
+  <li><a href="#section-tools">Developer tools</a></li>
+  <li><a href="#section-contribute">How to contribute</a></li>
+  <li><a href="#section-package">Creating a package</a></li>
+</ul>
 
-  <h2>Setting up a development environment</h2>
-  <div class="indent">
-    <p>
-      OS.js already comes with a development environment, using <a href="/doc/manuals/man-configuration.html"><b>dist-dev</b></a>.
-    </p>
-    <p>
-      To install all utilities, do:
-    </p>
-    <pre class="code"># Install all grunt tasks etc
-$ npm install --development
-
-# To automatically restart server when changes in codebase occur
-$ npm install -g supervisor
-
-# Unit testing support
-$ sudo npm install -g mocha</pre>
-  </div>
-
-  <h2>Running the development server</h2>
-  <div class="indent">
-    <p>
-      Just use the launcher:
-    </p>
-    <pre class="code">./bin/start-dev.sh</pre>
-  </div>
-
-  <h2>How to contribute</h2>
-  <div class="indent">
-    <p>
-      If you want to contribute to the official codebase, this is a basic overview of all the steps:
-    </p>
-    <ul>
-      <li>Create a <a href="https://github.com/">Github account</a>.</li>
-      <li><a href="https://github.com/os-js/OS.js#fork-destination-box">Fork OS.js to your account</a></li>
-      <li>Proceed to clone your repository on your computer</li>
-      <li>Create a <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">new branch</a> (ex: 'translate-turkish')</li>
-      <li>Make any changes you want. <b>Follow the style guide and test everything</b> (see below for more info).</li>
-      <li><a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Commit</a> any changes you have and <a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes#Pushing-to-Your-Remotes">push them</a>.</li>
-      <li>Create a <a href="https://github.com/os-js/OS.js/compare">pull-request</a> on Github.</li>
-    </ul>
-    <p>
-      <i>Make sure that your commit messages are <a href="https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message">useful</a> and to the point.</i>. You can look at the OS.js repository for examples.
-    </p>
-    <p>
-      If you make multiple commits regarding one feature, or bug, make sure to <a href="http://makandracards.com/makandra/527-squash-several-git-commits-into-a-single-commit">squash</a> them.
-    </p>
-    <p>
-      <b>If you don't follow these rules or steps, your pull-request might be rejected</b>
-    </p>
-    <p>
-      <i>You can switch back to master branch (and pull) after your changes has been merged. If you want to make more changes, just re-follow the steps above (after forking)</i>
-    </p>
-  </div>
-
-  <h2>Style guide</h2>
-  <div class="indent">
-    <ul>
-      <li>Use <b>UTF-8</b> for your file encoding</li>
-      <li>Use <b>2 spaces</b>, not <i>tabs</i> for indentation.</li>
-      <li><a href="https://github.com/os-js/OS.js/blob/master/src/client/javascript/vfs.js">Example JavaScript file</a></li>
-      <li><a href="https://github.com/os-js/OS.js/blob/master/src/client/stylesheets/core.css">Example CSS file</a></li>
-      <li><a href="https://github.com/os-js/OS.js/blob/master/src/client/dialogs.html">Example HTML file</a></li>
-      <li><a href="https://github.com/os-js/OS.js/blob/master/src/conf/110-client.json">Example JSON file</a></li>
-    </ul>
-    <p>
-      You can check your code style for "problems" by using automated tools:
-    </p>
-    <pre class="code"># Check your javascript
-grunt eslint
-
-# Check your css
-grunt csslint
-
-# Check your schemes (html)
-grunt xml_validator
-
-# Run server unit tests
-grunt mochaTest</pre>
-  </div>
-
-  <h2>Code locations</h2>
-  <div class="indent">
-    <pre>
-src/client/javascript             # Client JavaScript
+<h2 id="section-codebase">Codebase</h2>
+<p>
+  Everything is written in HTML5, CSS3 and ES5 (Strict). All source files are separated in <i>src/</i>.
+</p>
+<pre>src/client/javascript             # Client JavaScript
 src/client/stylesheets            # Client Stylesheets
 src/client/themes                 # Client theme resources
 src/server/node                   # Server code
@@ -194,52 +114,130 @@ src/build.js                      # Build system codebase
 Gruntfile.js                      # Build system setup
 vendor                            # Third party libraries etc.
 vfs                               # Default file storage paths (for users)
-test                              # Test files
 bin                               # General scripts
 doc                               # General documentation
 dist                              # Production build output
-dist-dev                          # Development environment
-    </pre>
-  </div>
+dist-dev                          # Development environment</pre>
 
+<h2 id="section-env">Setting up a developer environment</h2>
+<p>
+  Setting up a developer environment is mostly the same as setting up a production instance, only with a couple of more dependencies.
+</p>
+<pre class="code"># Clone OS.js
+$ git clone https://github.com/your-username/OS.js.git
+$ cd OS.js
 
-  <h2>Using the build system</h2>
-  <div class="indent">
-    <p>
-      More information about this in the <a href="/doc/manuals/man-build-grunt.html">build manual</a>.
-    </p>
-  </div>
+# Install all dependencies and extra testing suite
+$ npm install
+$ npm install -g mocha
 
-  <h2>Getting started with development</h2>
-  <div class="indent">
-    <p>
-      You can look at the <a href="/doc/tutorials/">tutorials</a>, to get started creating your own apps and extensions.
-    </p>
-    <p>
-      For contributions, look at the document over at the <a href="https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md">Github repository</a>.
-    </p>
-  </div>
+# Build everything
+$ grunt
 
-  <h2>Tips</h2>
-  <div class="indent">
-    <h3>Restart your application</h3>
-    <p>
-      You can reload and relaunch your application with:
-    </p>
-    <pre class="code">OSjs.API.relaunch('MyApplicationClassName')</pre>
-    <h3>Automatically restart server on changes</h3>
-    <p>
-      Run this grunt task to automatically restart server when codebase or configs changes (with exception of apps):
-    </p>
-    <pre class="code">grunt watch</pre>
+# Optionally run watch to automatically rebuild client files upon changes.
+$ grunt watch
 
-    <h3>TEST ALL THE THINGS!</h3>
-    <p>
-      To run all tests on the code, just use:
-    </p>
-    <pre class="code">grunt test</pre>
-  </div>
+# Optionally install the node supervisor to automaticall restart server upon changes.
+$ npm install -g supervisor
 
+# Start server
+$ ./bin/start-dev.sh</pre>
+
+<h2 id="section-tools">Developer tools</h2>
+<p>
+  All the tools you need are provided as Grunt commands. Your browser developer tools and/or IDE is all you need.
+</p>
+<h3>Relevant information</h3>
+<ul>
+  <li><a href="/doc/manuals/man-configuration.html">Configuring and building</a></li>
+  <li><a href="/doc/manuals/man-build-grunt.html">Build system and Grunt</a></li>
+</ul>
+
+<h2 id="section-contribute">How to contribute and publish changes or additions</h2>
+<p>
+  Everything is done with <i>Git</i> and <i>Github</i>. All changes should be submitted via a custom branch.
+</p>
+<ul>
+  <li>First, you have to create a new <a href="https://github.com/">Github</a> account.</li>
+  <li>Then proceed to <a href="https://github.com/os-js/OS.js#fork-destination-box">fork OS.js</a> to make a copy to your account.</li>
+  <li>Set up a developer environment described above, but change the repository URL to the fork you made.</li>
+  <li>Now you can make changes and publish them to the main repository for addition.</li>
+</ul>
+<p>
+   Follow the instructions below:
+</p>
+<pre class="code"># Create a new branch
+# You can name the branch `issue-XXX` if you have an open issue for your planned changes.
+# Or if not, something like `translate-LANG`, `feature-X` or `bugfix-Y`
+$ git checkout -b issue-XXX
+
+# Make modifications
+$ edit src/client/javascript/init.js
+
+# If you are not running a watch you can run this to rebuild everything
+# required for developer environment to run
+$ grunt dist-dev
+
+# Run tests
+$ grunt test
+
+# Commit and push changes
+$ git add src/client/javascript/init.js
+$ git commit -m "API: Fix exception on init when connection is lost"
+$ git push origin issue-XXX</pre>
+<p>
+  Now go to the OS.js repository <a href="https://github.com/os-js/OS.js/pulls">pull request page</a>. Find your branch and press "Create pull request". Fill in the details and submit. It will be looked at ASAP.
+</p>
+<h3>Style guide</h3>
+<ul>
+  <li>Use <b>UTF-8</b> encoding for all files with text.</li>
+  <li>Use <b>2 space</b> for indentation.</li>
+  <li>Write <a href="https://github.com/erlang/otp/wiki/writing-good-commit-messages">good commit messages</a>.</li>
+  <li>Look at the codebase for a general feel for the code style</li>
+</ul>
+
+<h2 id="section-package">Creating a new application (package)</h2>
+<p>
+  Using <i>Grunt</i> you can create packages from many templates, including boilerplate applications. Simply run:
+</p>
+<script type="text/javascript" src="https://asciinema.org/a/398wgp8eqav1hvddr7tyb4s2o.js" id="asciicast-398wgp8eqav1hvddr7tyb4s2o" async></script>
+<pre class="code"># Create from normal application template
+$ grunt create-package:repository/ApplicationName
+
+# You can also create a simpler default application
+$ grunt create-package:repository/ApplicationName:simple
+
+# Install and build package
+# This is also the command you can run to rebuild after you make changes
+$ grunt manifest config packages:repository/ApplicationName
+</pre>
+<p>
+  See <a href="/doc/tutorials/">the tutorial section</a> for more information about different types of packages.
+</p>
+<p>
+  You'll end up with a new directory inside <i>src/packages</i> with the path you entered. A package usually consists of these files:
+</p>
+<div class="indent">
+  <h3>main.js</h3>
+  <p>
+    The client-side package script.
+  </p>
+  <h3>main.css</h3>
+  <p>
+    The client-side package stylesheet.
+  </p>
+  <h3>scheme.html</h3>
+  <p>
+    The client-side application markup. This is regular HTML, but it is parsed with custom OS.js tags in mind.
+  </p>
+  <h3>api.js</h3>
+  <p>
+    Server-side API script
+  </p>
+  <h3>metadata.json</h3>
+  <p>
+    <a href="/doc/manuals/package-normal.html">Metadata</a> about the package. Can also contain custom stuff like settings and options for use in your applications.
+  </p>
 </div>
 
 
