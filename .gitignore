@@ -2,3 +2,4 @@ gendoc/node_modules/
 gendoc/output/
 Makefile
 git-status.log
+OS.js
