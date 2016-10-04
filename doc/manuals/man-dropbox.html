@@ -109,10 +109,10 @@
 <p>
   Simply update the configuration:
 </p>
-<pre class="code">grunt config --set=client.DropboxAPI.ClientKey --value=YOUR_CLIENT_KEY
-grunt config --set=client.VFS.Dropbox.Enabled --value=true
-grunt config --preload=dropbox --path=/vendor/dropbox.js
-grunt config</pre>
+<pre class="code">grunt config:set --name=client.DropboxAPI.ClientKey --value=YOUR_CLIENT_KEY
+grunt config:set --name=client.VFS.Dropbox.Enabled --value=true
+grunt config:add-preload name=dropbox --path=/vendor/dropbox.js
+grunt build:config</pre>
 
 
       <div class="adddshere">

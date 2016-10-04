@@ -81,7 +81,7 @@
   <div class="indent">
     <p>Simply run:</p>
 
-    <pre class="code">grunt create-package:default/MyName:service</pre>
+    <pre class="code">grunt generate:package --name=default/MyName --type=service</pre>
     <p>
       The "default" is the name of the repository folder you want to place your package in.
     </p>
@@ -106,10 +106,7 @@
   <h2>Install</h2>
   <div class="indent">
     <p>Now run this command to add it to global manifest (make it visible in OS.js)</p>
-    <pre class="code">grunt manifest config packages:default/MyName</pre>
-    <p>
-      If you are using "dist-dev", you don't have to run the "packages" grunt command.
-    </p>
+    <pre class="code">grunt build:manifest build:config build:package --name=default/MyName</pre>
   </div>
 
   <h2>Tips</h2>

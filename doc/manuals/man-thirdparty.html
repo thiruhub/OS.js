@@ -97,7 +97,7 @@
     <p>
       You can add it directly to index.html by modifying <pre>src/templates/dist/default/index.html</pre> then run:
     </p>
-    <pre class="code">grunt dist-files</pre>
+    <pre class="code">grunt build:core</pre>
   </div>
 
   <h2>Add to build</h2>
@@ -105,7 +105,7 @@
     <p>
       You can also put it into <pre>vendor</pre> then modify <pre>src/conf/200-compile.json</pre> and run:
     </p>
-    <pre class="code">grunt core dist-files</pre>
+    <pre class="code">grunt build:core</pre>
   </div>
 
   <h2>Add to boot</h2>
@@ -129,7 +129,7 @@
     <p>
       Then run:
     </p>
-    <pre class="code">grunt config</pre>
+    <pre class="code">grunt build:config</pre>
     <p>
       <i>It is prefered that you store the files in your "dist/vendor" folder and load them from there</i>.
     </p>
@@ -149,7 +149,7 @@
   ]
 }
     </pre>
-    <pre class="code">grunt manifest packages:REPO/NAME</pre>
+    <pre class="code">grunt build:manifest build:package --name=REPO/NAME</pre>
     <p>
       <i>It is prefered that you store the files in your app folder and load them from there</i>.
     </p>

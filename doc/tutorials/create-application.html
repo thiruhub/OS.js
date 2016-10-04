@@ -74,13 +74,11 @@
 <h1>Tutorial: Create your own application</h1>
 <div>
 
-  <script type="text/javascript" src="https://asciinema.org/a/398wgp8eqav1hvddr7tyb4s2o.js" id="asciicast-398wgp8eqav1hvddr7tyb4s2o" async></script>
-
   <h2>Create from template</h2>
   <div class="indent">
     <p>Simply run:</p>
 
-    <pre class="code">grunt create-package:default/MyName</pre>
+    <pre class="code">grunt generate:package --name=default/MyName</pre>
     <p>
       The "default" is the name of the repository folder you want to place your package in.
     </p>
@@ -105,13 +103,10 @@
     </p>
   </div>
 
-  <h2>Install</h2>
+  <h2>Build and Install</h2>
   <div class="indent">
-    <p>Now run this command to add it to global manifest (make it visible in OS.js)</p>
-    <pre class="code">grunt manifest config packages:default/MyName</pre>
-    <p>
-      If you are using "dist-dev", you don't have to run the "packages" grunt command.
-    </p>
+    <p>Now run this command build the entire package and to add to manifest</p>
+    <pre class="code">grunt build:manifest build:config build:package --name=default/MyName</pre>
   </div>
 
   <h2>Tips</h2>

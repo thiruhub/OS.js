@@ -84,7 +84,7 @@
 edit src/client/themes/styles/mytheme/metadata.json
 edit src/client/themes/styles/mytheme/style.less
 edit src/conf/112-themes.json # Or https://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:styles:mytheme</pre>
+grunt build:config build:theme --style=mytheme</pre>
     <p>
       Then update the theme manifest and LESS manually
     </p>
@@ -98,7 +98,7 @@ grunt config themes:styles:mytheme</pre>
     <pre class="code">cp -r src/client/themes/icons/default src/client/themes/icons/mytheme
 edit src/client/themes/icons/mytheme/metadata.json
 edit src/conf/112-themes.json # Or https://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:icons</pre>
+grunt build:config build:themes</pre>
   </div>
 
   <h2>Create your own Sound theme</h2>
@@ -109,7 +109,7 @@ grunt config themes:icons</pre>
     <pre class="code">cp -r src/client/themes/sounds/default src/client/themes/sound/mytheme
 edit src/client/themes/sound/mytheme/metadata.json
 edit src/conf/112-themes.json # Or https://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:resources</pre>
+grunt build:config build:theme --static</pre>
   </div>
 
 
@@ -119,7 +119,7 @@ grunt config themes:resources</pre>
       Just add your fonts in a sub-folder like <b>Karla</b>. Then update the included stylesheet with correct name(s).
     </p>
     <pre class="code">edit src/conf/112-themes.json # Or https://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:fonts</pre>
+grunt build:config buid:theme --fonts</pre>
   </div>
 </div>
 

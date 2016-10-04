@@ -95,10 +95,10 @@
   In this example we assign the mountpoint `data://` to `/tmp`
 </p>
 <pre class="code"># Add with the built in shortcut
-grunt config --mount=data --description="My data files" --path=/tmp
+grunt config:add-mount --name=data --description="My data files" --path=/tmp
 
 # Update configuration
-grunt config</pre>
+grunt build:config</pre>
 
 <p>
   Then restart your server and reload OS.js. You can now access `/tmp` via `data://`.

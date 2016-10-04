@@ -107,6 +107,7 @@ src/client/stylesheets            # Client Stylesheets
 src/client/themes                 # Client theme resources
 src/server/node                   # Server code
 src/packages                      # Package sources (applications)
+src/build                         # Build system
 src/conf                          # Configuration files
 src/templates                     # Templates for the build system
 src/gfx                           # Graphic sources
@@ -174,9 +175,8 @@ $ git checkout -b issue-XXX
 # Make modifications
 $ edit src/client/javascript/init.js
 
-# If you are not running a watch you can run this to rebuild everything
-# required for developer environment to run
-$ grunt dist-dev
+# Rebuild everything
+$ grunt
 
 # Run tests
 $ grunt test
@@ -200,16 +200,15 @@ $ git push origin issue-XXX</pre>
 <p>
   Using <i>Grunt</i> you can create packages from many templates, including boilerplate applications. Simply run:
 </p>
-<script type="text/javascript" src="https://asciinema.org/a/398wgp8eqav1hvddr7tyb4s2o.js" id="asciicast-398wgp8eqav1hvddr7tyb4s2o" async></script>
 <pre class="code"># Create from normal application template
-$ grunt create-package:repository/ApplicationName
+$ grunt generate:package --name=repository/ApplicationName
 
 # You can also create a simpler default application
-$ grunt create-package:repository/ApplicationName:simple
+$ grunt generate:package --name=repository/ApplicationName:simple
 
 # Install and build package
 # This is also the command you can run to rebuild after you make changes
-$ grunt manifest config packages:repository/ApplicationName
+$ grunt build:manifest build:config build:package --name=repository/ApplicationName
 </pre>
 <p>
   See <a href="/doc/tutorials/">the tutorial section</a> for more information about different types of packages.

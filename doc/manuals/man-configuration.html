@@ -137,10 +137,6 @@
     Look at the <a href="/doc/manuals/man-build-grunt.html">configuration manual page</a> for more information about building spesific components.
   </p>
 
-  <p>
-    You can use <pre class="code">grunt dist</pre> or <pre class="code">grunt dist-dev</pre> as shortcuts to run any needed tasks for the two build directories.
-  </p>
-
 </div>
 
 <h2>Configuring</h2>
@@ -153,9 +149,9 @@
   </p>
   <pre class="code"># Basic examples
 
-grunt config --get=client.Connection.RootURI
+grunt config:get --name=client.Connection.RootURI
 
-grunt config --set=client.Connection.RootURI --value=/custom/path
+grunt config:set --name=client.Connection.RootURI --value=/custom/path
 
 grunt config # rebuild config files</pre>
 
@@ -203,7 +199,7 @@ grunt config # rebuild config files</pre>
 grunt config
 
 # For php server behind apache (note that this does not generate regex rules yet)
-grunt apache-htaccess</pre>
+grunt generate:apache-htaccess</pre>
 </div>
 
 

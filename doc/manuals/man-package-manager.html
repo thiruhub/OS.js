@@ -102,13 +102,13 @@
 git clone --recursive https://github.com/username/package-repository src/packages/package-repository
 
 # Add to repositories list
-grunt config --repository --add=package-repository
+grunt config:add-repository --name=package-repository
 
 # Update manifest
 grunt manifest</pre>
 
 <h2>Removing repository</h2>
-<pre class="code">grunt config --repository --remove=package-repository
+<pre class="code">grunt config:remove-repository --name=package-repository
 grunt manifest</pre>
 
 <h2>Enabling and Disabling Packages</h2>
@@ -116,13 +116,13 @@ grunt manifest</pre>
   Look at <a href="/doc/manuals/man-build-grunt.html">configuration manual</a> page for more information.
 </p>
 <pre class="code"># Enable
-grunt packages --enable=PACKAGENAME
+grunt config:enable-package --name=REPO/PACKAGENAME
 
 # Disable
-grunt packages --disable=PACKAGENAME
+grunt config:disable-package --name=REPO/PACKAGENAME
 
 # Update manifest
-grunt manifest</pre>
+grunt build:config build:manifest</pre>
 
 <h2>Managing user packages</h2>
 <p>

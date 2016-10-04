@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Namespace: API - OS.js Client JSDoc</title>
+    <title>Namespace: PackageManager - OS.js Client JSDoc</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -44,7 +44,7 @@
 
 <main>
 
-    <h1 class="page-title">Namespace: API</h1>
+    <h1 class="page-title">Namespace: PackageManager</h1>
 
     
 
@@ -54,7 +54,7 @@
 <section>
 
     
-        <h2>API</h2>
+        <h2>PackageManager</h2>
         
     
 
@@ -126,9 +126,9 @@
 
     
 
-    <h4 class="name" id=".application">
+    <h4 class="name" id=".cache">
             
-    <span class="type-signature static">static</span>API.application<span class="signature">(server, args, callback)</span>
+    <span class="type-signature static">static</span>PackageManager.cache<span class="signature">(server, args, callback)</span>
     </h4>
 
     
@@ -136,285 +136,7 @@
 
 
 <div class="description">
-    Application API Call
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>server</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Server object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>args</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">API Call Arguments
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>path</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Package Path (ex: default/FileManager)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">API Method name</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>arguments</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">List of arguments to API Method</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Callback function => fn(error, result)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<hr />
-
-        
-            
-
-    
-
-    <h4 class="name" id=".curl">
-            
-    <span class="type-signature static">static</span>API.curl<span class="signature">(server, args, callback)</span>
-    </h4>
-
-    
-
-
-
-<div class="description">
-    cURL API Call
-
-<pre><code>
-NOTE: If you do a non-POST request with a body (with type of object) and no
-query string was defined in the url, this method will try to transform the
-given body data and append to the url.
-</code></pre>
+    Perform cache action
 </div>
 
 
@@ -507,8 +229,6 @@ given body data and append to the url.
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -519,186 +239,7 @@ given body data and append to the url.
 
         <tr>
             
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">HTTP Call method (GET/POST/HEAD)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>url</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">HTTP Call URL</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>body</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">HTTP POST Payload (alias: query)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>timeout</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Timeout in seconds (default=0)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>binary</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">Return binary (default=false)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mime</code></td>
+                <td class="name"><code>scope</code></td>
             
 
             <td class="type">
@@ -723,25 +264,21 @@ given body data and append to the url.
             
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last">If binary, which MIME</td>
+            <td class="description last">Package scope (user, system or null)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>headers</code></td>
+                <td class="name"><code>paths</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Array</span>
 
 
             
@@ -760,86 +297,8 @@ given body data and append to the url.
             
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last">Custom HTTP headers ({key:val})</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>json</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Send request as JSON (autodetected)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>contentType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Specify the content-type (autodetected)</td>
+            <td class="description last">Package paths (for user scope)</td>
         </tr>
 
     
@@ -930,11 +389,6 @@ given body data and append to the url.
 
 
 
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>Gives an object like: {httpCode: -1, body: '...'}</code></pre>
-
-
 
 <hr />
 
@@ -943,9 +397,9 @@ given body data and append to the url.
 
     
 
-    <h4 class="name" id=".login">
+    <h4 class="name" id=".install">
             
-    <span class="type-signature static">static</span>API.login<span class="signature">(server, args, callback)</span>
+    <span class="type-signature static">static</span>PackageManager.install<span class="signature">(server, args, callback)</span>
     </h4>
 
     
@@ -953,7 +407,7 @@ given body data and append to the url.
 
 
 <div class="description">
-    Manage Packages
+    Installs given package
 </div>
 
 
@@ -1054,7 +508,7 @@ given body data and append to the url.
 
         <tr>
             
-                <td class="name"><code>command</code></td>
+                <td class="name"><code>zip</code></td>
             
 
             <td class="type">
@@ -1070,20 +524,20 @@ given body data and append to the url.
 
             
 
-            <td class="description last">Command name</td>
+            <td class="description last">Package zip path</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>args</code></td>
+                <td class="name"><code>dest</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">String</span>
 
 
             
@@ -1093,7 +547,30 @@ given body data and append to the url.
 
             
 
-            <td class="description last">Command arguments</td>
+            <td class="description last">Package destination path</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>paths</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Package paths (for user scope)</td>
         </tr>
 
     
@@ -1192,9 +669,9 @@ given body data and append to the url.
 
     
 
-    <h4 class="name" id=".login">
+    <h4 class="name" id=".list">
             
-    <span class="type-signature static">static</span>API.login<span class="signature">(server, args, callback)</span>
+    <span class="type-signature static">static</span>PackageManager.list<span class="signature">(server, args, callback)</span>
     </h4>
 
     
@@ -1202,7 +679,7 @@ given body data and append to the url.
 
 
 <div class="description">
-    Login Wrapper. This is just a placeholder. The function is bound in the handler
+    List packages
 </div>
 
 
@@ -1291,6 +768,8 @@ given body data and append to the url.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1303,7 +782,7 @@ given body data and append to the url.
 
         <tr>
             
-                <td class="name"><code>username</code></td>
+                <td class="name"><code>scope</code></td>
             
 
             <td class="type">
@@ -1316,33 +795,53 @@ given body data and append to the url.
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Username</td>
+            <td class="description last">Package scope (user, system or null)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>password</code></td>
+                <td class="name"><code>paths</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Array</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Password</td>
+            <td class="description last">Package paths (for user scope)</td>
         </tr>
 
     
@@ -1441,9 +940,9 @@ given body data and append to the url.
 
     
 
-    <h4 class="name" id=".logout">
+    <h4 class="name" id=".uninstall">
             
-    <span class="type-signature static">static</span>API.logout<span class="signature">(Object, Object, Function)</span>
+    <span class="type-signature static">static</span>PackageManager.uninstall<span class="signature">(server, args, callback)</span>
     </h4>
 
     
@@ -1451,331 +950,7 @@ given body data and append to the url.
 
 
 <div class="description">
-    Logout Wrapper. This is just a placeholder. The function is bound in the handler
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>Object</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">server      Server object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Object</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">args        API Call Arguments</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Function</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">callback    Callback function => fn(error, result)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<hr />
-
-        
-            
-
-    
-
-    <h4 class="name" id=".settings">
-            
-    <span class="type-signature static">static</span>API.settings<span class="signature">(Object, Object, Function)</span>
-    </h4>
-
-    
-
-
-
-<div class="description">
-    Settings storing Wrapper. This is just a placeholder. The function is bound in the handler
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>Object</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">server      Server object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Object</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">args        API Call Arguments</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Function</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">callback    Callback function => fn(error, result)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<hr />
-
-        
-            
-
-    
-
-    <h4 class="name" id=".users">
-            
-    <span class="type-signature static">static</span>API.users<span class="signature">(server, args, callback)</span>
-    </h4>
-
-    
-
-
-
-<div class="description">
-    Manage Users via the Handler
+    Uninstalls given package
 </div>
 
 
@@ -1850,9 +1025,121 @@ given body data and append to the url.
 
             
 
-            <td class="description last">API Call Arguments
-                <h6>Properties</h6>
+            <td class="description last">API Call Arguments</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
                 
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Callback function => fn(error, result)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<hr />
+
+        
+            
+
+    
+
+    <h4 class="name" id=".update">
+            
+    <span class="type-signature static">static</span>PackageManager.update<span class="signature">(server, args, callback)</span>
+    </h4>
+
+    
+
+
+
+<div class="description">
+    Updates given package
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -1876,13 +1163,13 @@ given body data and append to the url.
 
         <tr>
             
-                <td class="name"><code>command</code></td>
+                <td class="name"><code>server</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -1892,7 +1179,7 @@ given body data and append to the url.
 
             
 
-            <td class="description last">Command name</td>
+            <td class="description last">Server object</td>
         </tr>
 
     
@@ -1915,14 +1202,7 @@ given body data and append to the url.
 
             
 
-            <td class="description last">Command arguments</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">API Call Arguments</td>
         </tr>
 
     
