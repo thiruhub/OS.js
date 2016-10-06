@@ -508,11 +508,28 @@
    */
   DefaultHandler.prototype._checkHasVFSPrivilege = function(server, method, args, callback) {
     var mount = this.instance.vfs.getRealPath(server, args.path || args.src);
-    var cfg = this.instance.config.vfs.groups;
-    var against;
 
+    // Figure out r/w permission on a user-level
+    var writeMethods = {copy: true, move: true, mkdir: false, upload: false, write: false, 'delete': false};
+    if ( typeof writeMethods[method] !== 'undefined' ) {
+      var dest =  writeMethods[method] === true ? args.dest : args.path;
+      var proto = dest.split(':')[0];
+      var cfg = this.instance.config.vfs[proto];
+
+      if ( typeof cfg === 'object' && cfg.permissions && cfg.permissions.ro ) {
+        var uname = this.getUserName(server);
+        if ( cfg.permissions.ro.indexOf(uname) ) {
+          callback('You\'re not allowed to write to this VFS mountpoint');
+          return;
+        }
+      }
+    }
+
+    // Then against groups
+    var against;
+    var groups = this.instance.config.vfs.groups;
     try {
-      against = cfg[mount.protocol.replace(/\:\/\/$/, '')];
+      against = groups[mount.protocol.replace(/\:\/\/$/, '')];
     } catch ( e ) {}
 
     if ( against ) {

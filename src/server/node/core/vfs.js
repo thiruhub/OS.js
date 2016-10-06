@@ -122,10 +122,12 @@
       if ( tmp.length === 3 ) {
         fprotocol = tmp[1];
 
-        if ( server.config.vfs.mounts && server.config.vfs.mounts[fprotocol] ) {
+        if ( server.config.vfs.mounts ) {
+          var cfg = server.config.vfs.mounts[fprotocol];
+          var dst = typeof cfg === 'string' ? cfg : cfg.path;
           protocol = fprotocol + '://';
           path = path.replace(/^(\w+)\:\/\//, '');
-          fullPath = _path.join(server.config.vfs.mounts[fprotocol], path);
+          fullPath = _path.join(dst, path);
         }
       }
     }
