@@ -42,6 +42,10 @@
       "type": "javascript"
     },
     {
+      "src": "widget.js",
+      "type": "javascript"
+    },
+    {
       "src": "panelitems/buttons.js",
       "type": "javascript"
     },
@@ -70,6 +74,10 @@
       "type": "javascript"
     },
     {
+      "src": "widgets/clock.js",
+      "type": "javascript"
+    },
+    {
       "src": "main.js",
       "type": "javascript"
     },
@@ -82,6 +90,13 @@
       "type": "stylesheet"
     }
   ],
+  "widgets": {
+    "Clock": {
+      "Name": "Clock",
+      "Description": "A simple analog clock",
+      "Icon": "status/appointment-soon.png"
+    }
+  },
   "panelItems": {
     "AppMenu": {
       "Name": "AppMenu",
