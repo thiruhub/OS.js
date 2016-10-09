@@ -38,7 +38,6 @@
   var MIN_HEIGHT = 64;
 
   var TIMEOUT_SAVE = 500;
-  var TIMEOUT_RESIZE = 50;
   var TIMEOUT_SHOW_ENVELOPE = 3000;
   var TIMEOUT_HIDE_ENVELOPE = 1000;
 
@@ -228,7 +227,7 @@
     this.onInited();
     this.onResize(this._dimension);
 
-    var fpsInterval, startTime, now, then, elapsed;
+    var fpsInterval, now, then, elapsed;
 
     function animate() {
       window.requestAnimationFrame(animate);
@@ -248,7 +247,6 @@
       this._requestId = window.requestAnimationFrame(function() {
         fpsInterval = 1000 / fps;
         then = Date.now();
-        startTime = then;
 
         animate();
       });
@@ -281,6 +279,12 @@
   };
 
   /**
+   * Blurs the widget if active
+   */
+  Widget.prototype.blur = function() {
+  };
+
+  /**
    * When mouse is pressed
    */
   Widget.prototype._onMouseDown = function(ev, pos, action) {
@@ -298,8 +302,6 @@
    * When mouse is moved after pressing
    */
   Widget.prototype._onMouseMove = function(ev, obj, action) {
-    var self = this;
-
     this._isManipulating = true;
 
     if ( action === 'move' ) {

@@ -690,6 +690,9 @@
     if ( ev === 'focus' ) {
       if ( this.iconView ) {
         this.iconView.blur();
+        this.widgets.forEach(function(w) {
+          w.blur();
+        });
       }
     }
   };
