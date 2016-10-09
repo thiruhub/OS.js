@@ -49,10 +49,10 @@
     minHeight: MIN_HEIGHT,
     maxHeight: 500,
     maxWidth: 500,
-    left: -1,
-    right: -1,
+    left: 0,
+    right: null,
     top: 0,
-    bottom: 0,
+    bottom: null,
     canvas: false,
     resizable: false,
     viewBox: false, // x y w h or 'true'
@@ -127,6 +127,13 @@
         instance._hideEnvelope();
       }, TIMEOUT_HIDE_ENVELOPE);
     });
+  }
+
+  function validNumber(num) {
+    if ( typeof num !== 'undefined' && num !== null ) {
+      return !isNaN(num);
+    }
+    return false;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -345,10 +352,10 @@
     var opts = {
       width: this._dimension.width,
       height: this._dimension.height,
-      left: this._position.left,
-      top: this._position.top,
       right: this._position.right,
-      bottom: this._position.bottom
+      left: validNumber(this._position.left) ? null : this._position.left,
+      bottom: this._position.bottom,
+      top: validNumber(this._position.bottom) ? null : this._position.top
     };
 
     this._settings.set(null, opts, true);
@@ -419,7 +426,7 @@
    */
   Widget.prototype._updatePosition = function() {
     if ( this._$element ) {
-      if ( this._position.right !== null ) {
+      if ( validNumber(this._position.right) ) {
         this._$element.style.left = 'auto';
         this._$element.style.right = String(this._position.right) + 'px';
       } else {
@@ -427,7 +434,7 @@
         this._$element.style.right = 'auto';
       }
 
-      if ( this._position.bottom !== null ) {
+      if ( validNumber(this._position.bottom) ) {
         this._$element.style.top = 'auto';
         this._$element.style.bottom = String(this._position.bottom) + 'px';
       } else {
@@ -459,12 +466,12 @@
    */
   Widget.prototype._getNormalizedPosition = function() {
     var left = this._position.left;
-    if ( this._position.right ) {
+    if ( validNumber(this._position.right) ) {
       left = this._windowWidth - this._position.right - this._dimension.width;
     }
 
     var top = this._position.top;
-    if ( this._position.bottom ) {
+    if ( validNumber(this._position.bottom) ) {
       top = this._windowHeight - this._position.bottom - this._dimension.height;
     }
 
