@@ -203,8 +203,6 @@
 
     if ( this._options.canvas ) {
       this._$canvas = document.createElement('canvas');
-      this._$canvas.width = (this._dimension.width || MIN_WIDTH);
-      this._$canvas.height = (this._dimension.height || MIN_HEIGHT);
 
       if ( this._options.viewBox ) {
         this._$canvas.setAttribute('viewBox', this._options.viewBox);
@@ -454,8 +452,8 @@
     }
 
     if ( this._$canvas ) {
-      this._$canvas.width = this._dimension.width;
-      this._$canvas.height = this._dimension.height;
+      this._$canvas.width = this._dimension.width || MIN_WIDTH;
+      this._$canvas.height = this._dimension.height || MIN_HEIGHT;
     }
   };
 

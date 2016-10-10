@@ -78,6 +78,10 @@
       "type": "javascript"
     },
     {
+      "src": "widgets/digitalclock.js",
+      "type": "javascript"
+    },
+    {
       "src": "main.js",
       "type": "javascript"
     },
@@ -94,6 +98,11 @@
     "AnalogClock": {
       "Name": "AnalogClock",
       "Description": "A simple analog clock",
+      "Icon": "status/appointment-soon.png"
+    },
+    "DigitalClock": {
+      "Name": "DigitalClock",
+      "Description": "A simple digital clock",
       "Icon": "status/appointment-soon.png"
     }
   },
