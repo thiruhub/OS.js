@@ -35,10 +35,10 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Widget: Clock
+   * Widget: AnalogClock
    */
-  function WidgetClock(settings) {
-    Widget.call(this, 'Clock', {
+  function WidgetAnalogClock(settings) {
+    Widget.call(this, 'AnalogClock', {
       width: 300,
       height: 300,
       aspect: 1,
@@ -53,18 +53,18 @@
     this.radius = 300 / 2;
   }
 
-  WidgetClock.prototype = Object.create(Widget.prototype);
-  WidgetClock.constructor = Widget;
+  WidgetAnalogClock.prototype = Object.create(Widget.prototype);
+  WidgetAnalogClock.constructor = Widget;
 
-  WidgetClock.prototype.init = function(root) {
+  WidgetAnalogClock.prototype.init = function(root) {
     return Widget.prototype.init.apply(this, arguments);
   };
 
-  WidgetClock.prototype.destroy = function(root) {
+  WidgetAnalogClock.prototype.destroy = function(root) {
     return Widget.prototype.destroy.apply(this, arguments);
   };
 
-  WidgetClock.prototype.onRender = function() {
+  WidgetAnalogClock.prototype.onRender = function() {
     if ( !this._$canvas ) {
       return;
     }
@@ -131,7 +131,7 @@
     drawHand(ctx, second, radius * 0.9, radius * 0.02);
   };
 
-  WidgetClock.prototype.onResize = function(dimension) {
+  WidgetAnalogClock.prototype.onResize = function(dimension) {
     if ( !this._$canvas || !this._$context ) {
       return;
     }
@@ -146,6 +146,6 @@
 
   OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Widgets = OSjs.Applications.CoreWM.Widgets || {};
-  OSjs.Applications.CoreWM.Widgets.Clock = WidgetClock;
+  OSjs.Applications.CoreWM.Widgets.AnalogClock = WidgetAnalogClock;
 
 })(OSjs.Applications.CoreWM.Widget, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI, OSjs.Core.Window);
