@@ -416,7 +416,7 @@
       width: this._dimension.width,
       height: this._dimension.height,
       right: this._position.right,
-      left: validNumber(this._position.left) ? null : this._position.left,
+      left: validNumber(this._position.right) ? null : this._position.left,
       bottom: this._position.bottom,
       top: validNumber(this._position.bottom) ? null : this._position.top,
       settings: {
