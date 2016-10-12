@@ -41,7 +41,7 @@
     Widget.call(this, 'AnalogClock', {
       width: 300,
       height: 300,
-      aspect: 1,
+      aspect: true,
       top: 100,
       right: 20,
       canvas: true,

@@ -42,7 +42,7 @@
   var TIMEOUT_HIDE_ENVELOPE = 1000;
 
   var DEFAULT_OPTIONS = {
-    aspect: 0, // 0 = no aspect, 1 = square
+    aspect: false, // true for automatic aspect based on width
     width: 100,
     height: 100,
     minWidth: MIN_WIDTH,
@@ -69,6 +69,19 @@
     var dimension = instance._getDimension();
     var start = {x: 0, y: 0};
 
+    function _getDimensionAspected(dx, dy) {
+      if ( instance._options.aspect === true ) {
+        var width = dimension.width + dx;
+        var height = width / instance._aspect;
+        return {width: width, height: height}
+      }
+
+      return {
+        width: dimension.width + dx,
+        height: dimension.height + dy
+      };
+    }
+
     function _mouseDown(ev, pos, action) {
       ev.preventDefault();
 
@@ -83,10 +96,7 @@
         var obj = action === 'move' ? {
           left: position.left + dx,
           top: position.top + dy
-        } : {
-          width: instance._options.aspect ? (dimension.width + dx) : dimension.width + dx,
-          height: instance._options.aspect ? (dimension.height + dx) : dimension.height + dy
-        };
+        } : _getDimensionAspected(dx, dy);
 
         instance._onMouseMove(ev, obj, action);
       });
@@ -127,6 +137,10 @@
         instance._hideEnvelope();
       }, TIMEOUT_HIDE_ENVELOPE);
     });
+
+    Utils.$bind(instance._$element, 'contextmenu:widgetcontext', function(ev) {
+      instance._onContextMenu(ev);
+    })
   }
 
   function validNumber(num) {
@@ -151,6 +165,12 @@
    */
   function Widget(name, options, settings) {
     options = Utils.mergeObject(DEFAULT_OPTIONS, options || {});
+
+    this._aspect = options.aspect === true ? options.width / options.height : (typeof options.aspect === 'number' ? options.aspect : 1.0);
+    if ( options.aspect !== false ) {
+      options.minHeight = options.width / this._aspect;
+      options.maxHeight = options.maxWidth / this._aspect;
+    }
 
     if ( options.viewBox ) {
       options.resizable = true;
@@ -269,6 +289,7 @@
     Utils.$unbind(this._$element, 'click:showenvelope');
     Utils.$unbind(this._$element, 'mouseover:showenvelope');
     Utils.$unbind(this._$element, 'mouseout:hideenvelope');
+    Utils.$unbind(this._$element, 'contextmenu:widgetcontext');
 
     this._saveTimeout = clearTimeout(this._saveTimeout);
 
@@ -344,6 +365,16 @@
   };
 
   /**
+   * When right mouse button is pressed
+   */
+  Widget.prototype._onContextMenu = function(ev) {
+    var res = this.onContextMenu(ev);
+    if ( typeof res === 'undefined' || res === true ) {
+      API.createMenu([], ev)
+    }
+  };
+
+  /**
    * Saves this Widgets settings to CoreWM
    */
   Widget.prototype._saveOptions = function() {
@@ -412,6 +443,9 @@
     var o = this._options;
     var w = Math.min(Math.max(obj.width, o.minWidth), o.maxWidth);
     var h = Math.min(Math.max(obj.height, o.minHeight), o.maxHeight);
+    if ( this._options.aspect === true ) {
+      h = w / this._aspect;
+    }
 
     this._dimension.width = w;
     this._dimension.height = h;
@@ -548,6 +582,13 @@
    */
   Widget.prototype.onInited = function() {
     // Implement in your widget
+  };
+
+  /**
+   * When Widget opens contextmenu
+   */
+  Widget.prototype.onContextMenu = function(ev) {
+    // Implement in your widget. You can return true to prevent default context action
   };
 
   /////////////////////////////////////////////////////////////////////////////

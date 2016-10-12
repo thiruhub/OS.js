@@ -41,7 +41,7 @@
     Widget.call(this, 'DigitalClock', {
       width: 300,
       height: 100,
-      aspect: 1,
+      aspect: true,
       top: 100,
       right: 20,
       canvas: true,
@@ -65,7 +65,7 @@
       return i < 10 ? '0' + String(i) : String(i);
     }).join(':');
 
-    var ratio = 0.65;
+    var ratio = 0.80;
     var fontSize = Math.round(this._dimension.height * ratio);
 
     var x = Math.round(this._dimension.width / 2);
