@@ -438,7 +438,11 @@
     var widgets = this.getSetting('widgets');
 
     (widgets || []).forEach(function(item) {
-      var settings = new OSjs.Helpers.SettingsFragment(item.settings || {}, 'CoreWM');
+      if ( !item.settings ) {
+        item.settings = {};
+      }
+
+      var settings = new OSjs.Helpers.SettingsFragment(item.settings, 'CoreWM');
 
       try {
         var w = new OSjs.Applications.CoreWM.Widgets[item.name](settings);

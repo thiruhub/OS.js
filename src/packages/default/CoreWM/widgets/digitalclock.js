@@ -80,10 +80,30 @@
     ctx.font = String(fontSize) + 'px Monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = this._options.settings.tree.color;
+    ctx.fillStyle = this._getSetting('color');
 
     ctx.clearRect(0, 0, this._dimension.width, this._dimension.height);
     ctx.fillText(txt, x, y);
+  };
+
+  Widget.prototype.onContextMenu = function(ev) {
+    var color = this._getSetting('color');
+    var self = this;
+
+    API.createMenu([{
+      title: API._('LBL_COLOR'),
+      onClick: function() {
+        API.createDialog('Color', {
+          color: color
+        }, function(ev, btn, result) {
+          if ( btn === 'ok' ) {
+            self._setSetting('color', result.hex, true);
+          }
+        });
+      }
+    }], ev)
+
+    return true;
   };
 
   /////////////////////////////////////////////////////////////////////////////

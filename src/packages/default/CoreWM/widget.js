@@ -216,6 +216,8 @@
     this._$canvas = null;
     this._$context = null
 
+    Utils.mergeObject(this._options.settings, settings.get('settings', {}));
+
     console.debug('Widget::construct()', this._name, this._settings.get());
   }
 
@@ -330,6 +332,8 @@
    * When mouse is pressed
    */
   Widget.prototype._onMouseDown = function(ev, pos, action) {
+    this._saveTimeout = clearTimeout(this._saveTimeout);
+
     Utils.$addClass(this._$element, 'corewm-widget-active');
 
     // This temporarily sets the position to a normalized one
@@ -385,10 +389,8 @@
    */
   Widget.prototype._onContextMenu = function(ev) {
     var self = this;
-    var res = this.onContextMenu(ev);
 
-    if ( typeof res === 'undefined' || res === true ) {
-      console.warn(this._options)
+    if ( !this.onContextMenu(ev) ) {
       if ( this._options.settings.enabled ) {
         var _ = OSjs.Applications.CoreWM._;
         var title = _('Open {0} Settings', _(this._name));
@@ -603,6 +605,24 @@
       right: this._position.right,
       bottom: this._position.bottom
     };
+  };
+
+  /**
+   * Sets a setting
+   */
+  Widget.prototype._setSetting = function(k, v, save) {
+    this._options.settings.tree[k] = v;
+    if ( save ) {
+      this._saveOptions();
+    }
+  };
+
+  /**
+   * Gets a setting
+   */
+  Widget.prototype._getSetting = function(k, def) {
+    var value = this._options.settings.tree[k];
+    return typeof value === 'undefined' ? def : value;
   };
 
   /**
