@@ -47,7 +47,13 @@
       canvas: true,
       frequency: 1,
       resizable: true,
-      viewBox: true
+      viewBox: true,
+      settings: {
+        enabled: true,
+        tree: {
+          color: '#ffffff'
+        }
+      }
     }, settings);
   }
 
@@ -74,7 +80,7 @@
     ctx.font = String(fontSize) + 'px Monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = this._options.settings.tree.color;
 
     ctx.clearRect(0, 0, this._dimension.width, this._dimension.height);
     ctx.fillText(txt, x, y);

@@ -56,7 +56,17 @@
     canvas: false,
     resizable: false,
     viewBox: false, // x y w h or 'true'
-    frequency: 2 // FPS for canvas
+    frequency: 2, // FPS for canvas
+    custom: {
+      // Used for widget-spesific styles etc
+    },
+    settings: {
+      enabled: false,
+      name: 'CoreWMWidgetSettingsWindow',
+      title: API._('LBL_SETTINGS'),
+      width: 300,
+      height: 300
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -164,7 +174,7 @@
    * @param   {OSjs.Helpers.SettingsFragment}   settings  SettingsFragment instance
    */
   function Widget(name, options, settings) {
-    options = Utils.mergeObject(DEFAULT_OPTIONS, options || {});
+    options = Utils.mergeObject(Utils.cloneObject(DEFAULT_OPTIONS), options || {});
 
     this._aspect = options.aspect === true ? options.width / options.height : (typeof options.aspect === 'number' ? options.aspect : 1.0);
     if ( options.aspect !== false ) {
@@ -199,6 +209,7 @@
     this._windowHeight = window.innerHeight;
     this._requestId = null;
     this._saveTimeout = null;
+    this._settingsWindow = null;
 
     this._$element = null;
     this._$resize = null;
@@ -298,6 +309,11 @@
     }
     this._requestId = null;
 
+    if ( this._settingsWindow ) {
+      this._settingsWindow.destroy();
+    }
+    this._settingsWindow = null;
+
     this._$canvas = Utils.$remove(this._$canvas);
     this._$resize = Utils.$remove(this._$resize);
     this._$element = Utils.$remove(this._$element);
@@ -370,29 +386,40 @@
   Widget.prototype._onContextMenu = function(ev) {
     var self = this;
     var res = this.onContextMenu(ev);
+
     if ( typeof res === 'undefined' || res === true ) {
-      var _ = OSjs.Applications.CoreWM._;
-      var title = _('Open {0} Settings', _(this._name));
-      API.createMenu([{
-        title: title,
-        onClick: function(ev) {
-          self._openSettings(ev)
-        }
-      }], ev)
+      console.warn(this._options)
+      if ( this._options.settings.enabled ) {
+        var _ = OSjs.Applications.CoreWM._;
+        var title = _('Open {0} Settings', _(this._name));
+        API.createMenu([{
+          title: title,
+          onClick: function(ev) {
+            self._openSettings(ev)
+          }
+        }], ev)
+      }
     }
   };
 
   /**
-   * Saves this Widgets settings to CoreWM
+   * Saves this Widgets options to CoreWM
    */
-  Widget.prototype._saveOptions = function() {
+  Widget.prototype._saveOptions = function(custom) {
+    if ( typeof custom !== 'undefined' ) {
+      this._options.settings.tree = custom;
+    }
+
     var opts = {
       width: this._dimension.width,
       height: this._dimension.height,
       right: this._position.right,
       left: validNumber(this._position.left) ? null : this._position.left,
       bottom: this._position.bottom,
-      top: validNumber(this._position.bottom) ? null : this._position.top
+      top: validNumber(this._position.bottom) ? null : this._position.top,
+      settings: {
+        tree: this._options.settings.tree
+      }
     };
 
     this._settings.set(null, opts, true);
@@ -402,6 +429,34 @@
    * Show settings dialog
    */
   Widget.prototype._openSettings = function(ev) {
+    if ( this._settingsWindow ) {
+      this._settingsWindow._focus();
+      return;
+    }
+
+    var self = this;
+    var wm = OSjs.Core.getWindowManager();
+    var win = new Window(this._options.settings.name, {
+      title: this._options.settings.title,
+      width: this._options.settings.width,
+      height: this._options.settings.height
+    }, null, wm._scheme);
+
+    win._on('init', function(root, scheme) {
+      var opts = self.onOpenSettings(root, scheme, ev);
+      scheme.render(this, opts.id);
+      scheme.find(this, 'ButtonOK').on('click', function() {
+        var settings = opts.save(root, scheme, ev);
+        self._saveOptions(settings);
+      });
+      opts.render(root, scheme, ev);
+    });
+
+    win._on('close', function() {
+      self._settingsWindow = null;
+    });
+
+    this._settingsWindow = wm.addWindow(win, true);
   };
 
   /**
@@ -602,7 +657,23 @@
    * When Widget opens contextmenu
    */
   Widget.prototype.onContextMenu = function(ev) {
-    // Implement in your widget. You can return true to prevent default context action
+    // Implement in your widget.
+    // You can return true to prevent default context action.
+  };
+
+  /**
+   * When Widget Settings dialog shows
+   */
+  Widget.prototype.onOpenSettings = function(root, scheme, ev) {
+    // Implement in your widget.
+    return {
+      id: null,
+      save: function() {
+        return {};
+      },
+      render: function() {
+      }
+    };
   };
 
   /////////////////////////////////////////////////////////////////////////////
