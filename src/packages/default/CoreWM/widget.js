@@ -368,9 +368,17 @@
    * When right mouse button is pressed
    */
   Widget.prototype._onContextMenu = function(ev) {
+    var self = this;
     var res = this.onContextMenu(ev);
     if ( typeof res === 'undefined' || res === true ) {
-      API.createMenu([], ev)
+      var _ = OSjs.Applications.CoreWM._;
+      var title = _('Open {0} Settings', _(this._name));
+      API.createMenu([{
+        title: title,
+        onClick: function(ev) {
+          self._openSettings(ev)
+        }
+      }], ev)
     }
   };
 
@@ -388,6 +396,12 @@
     };
 
     this._settings.set(null, opts, true);
+  };
+
+  /**
+   * Show settings dialog
+   */
+  Widget.prototype._openSettings = function(ev) {
   };
 
   /**
