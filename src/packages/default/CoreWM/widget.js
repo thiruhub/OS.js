@@ -250,6 +250,7 @@
     this._updatePosition();
     this._updateDimension();
 
+    Utils.$addClass(this._$element, 'Widget' + this._name);
     this._$element.appendChild(this._$resize);
     root.appendChild(this._$element);
 

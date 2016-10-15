@@ -71,19 +71,22 @@
       return i < 10 ? '0' + String(i) : String(i);
     }).join(':');
 
-    var ratio = 0.80;
+    var ratio = 0.55;
+    var xOffset = -10;
     var fontSize = Math.round(this._dimension.height * ratio);
 
-    var x = Math.round(this._dimension.width / 2);
-    var y = Math.round(this._dimension.height / 2);
-
-    ctx.font = String(fontSize) + 'px Monospace';
-    ctx.textAlign = 'center';
+    ctx.font = String(fontSize) + 'px Digital-7Mono';
+    //ctx.textAlign = 'center'; // Does not work properly for @font-facve
     ctx.textBaseline = 'middle';
     ctx.fillStyle = this._getSetting('color');
 
+    var x = Math.round(this._dimension.width / 2);
+    var y = Math.round(this._dimension.height / 2);
+    var m = ctx.measureText(txt).width;
+
     ctx.clearRect(0, 0, this._dimension.width, this._dimension.height);
-    ctx.fillText(txt, x, y);
+    //ctx.fillText(txt, x, y);
+    ctx.fillText(txt, x - (m / 2) + xOffset, y);
   };
 
   Widget.prototype.onContextMenu = function(ev) {

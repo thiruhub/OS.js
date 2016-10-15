@@ -1,3 +1,24 @@
+
+/**
+ * ===========================================================================
+ *                                 FONTS
+ * ===========================================================================
+ */
+@font-face {
+    font-family: 'Digital-7Mono';
+    src: url('widgets/fonts/DSEG7Classic-Regular.woff') format('woff'),
+         url('widgets/fonts/DSEG7Classic-Regular.ttf') format('truetype');
+
+    font-weight: 400;
+    font-style: normal;
+}
+
+/**
+ * ===========================================================================
+ *                                CLASSES
+ * ===========================================================================
+ */
+
 application-window-top .WindowFrost {
   position : absolute;
   top : 0;
