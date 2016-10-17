@@ -462,7 +462,11 @@
     'LBL_MISC': 'Misc',
     'LBL_OTHER': 'Other',
     'LBL_USERS': 'Users',
-    'LBL_FONTS': 'Fonts'
+    'LBL_FONTS': 'Fonts',
+    'LBL_WIDGET': 'Widget',
+    'LBL_WIDGETS': 'Widgets',
+    'LBL_LOCK': 'Lock',
+    'LBL_UNLOCK': 'Unlock'
 
   };
 
