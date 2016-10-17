@@ -278,11 +278,11 @@ corewm-widget {
       transform : rotate(45deg);
     }
 
-corewm-widget.corewm-widget-active:before {
+corewm-widget[data-locked="false"].corewm-widget-active:before {
   display : block;
 }
-corewm-widget.corewm-widget-active corewm-widget-resize,
-corewm-widget.corewm-widget-envelope corewm-widget-resize {
+corewm-widget[data-locked="false"].corewm-widget-active corewm-widget-resize,
+corewm-widget[data-locked="false"].corewm-widget-envelope corewm-widget-resize {
   display : block;
 }
 

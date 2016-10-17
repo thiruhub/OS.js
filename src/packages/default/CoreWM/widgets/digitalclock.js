@@ -49,7 +49,7 @@
       resizable: true,
       viewBox: true,
       settings: {
-        enabled: true,
+        enabled: false,
         tree: {
           color: '#ffffff'
         }
@@ -89,11 +89,11 @@
     ctx.fillText(txt, x - (m / 2) + xOffset, y);
   };
 
-  Widget.prototype.onContextMenu = function(ev) {
-    var color = this._getSetting('color');
+  WidgetDigitalClock.prototype.onContextMenu = function(ev) {
+    var color = this._getSetting('color') || '#ffffff';
     var self = this;
 
-    API.createMenu([{
+    return [{
       title: API._('LBL_COLOR'),
       onClick: function() {
         API.createDialog('Color', {
@@ -104,9 +104,7 @@
           }
         });
       }
-    }], ev)
-
-    return true;
+    }];
   };
 
   /////////////////////////////////////////////////////////////////////////////

@@ -53,6 +53,7 @@
     right: null,
     top: 0,
     bottom: null,
+    locked: false,
     canvas: false,
     resizable: false,
     viewBox: false, // x y w h or 'true'
@@ -94,6 +95,9 @@
 
     function _mouseDown(ev, pos, action) {
       ev.preventDefault();
+      if ( instance._locked ) {
+        return;
+      }
 
       timeout = clearTimeout(timeout);
       start = pos;
@@ -210,6 +214,7 @@
     this._requestId = null;
     this._saveTimeout = null;
     this._settingsWindow = null;
+    this._locked = options.locked === true;
 
     this._$element = null;
     this._$resize = null;
@@ -249,6 +254,7 @@
 
     this._updatePosition();
     this._updateDimension();
+    this._setLock(this._locked);
 
     Utils.$addClass(this._$element, 'Widget' + this._name);
     this._$element.appendChild(this._$resize);
@@ -389,20 +395,34 @@
    * When right mouse button is pressed
    */
   Widget.prototype._onContextMenu = function(ev) {
+    var _ = OSjs.Applications.CoreWM._;
     var self = this;
 
-    if ( !this.onContextMenu(ev) ) {
+    var c = this.onContextMenu(ev);
+
+    var menu = [{
+      title: this._locked ? _('LBL_UNLOCK') : _('LBL_LOCK'),
+      onClick: function() {
+        self._setLock();
+      }
+    }];
+
+    if ( c !== true ) {
+      if ( c instanceof Array ) {
+        menu = c.concat(menu);
+      }
+
       if ( this._options.settings.enabled ) {
-        var _ = OSjs.Applications.CoreWM._;
-        var title = _('Open {0} Settings', _(this._name));
-        API.createMenu([{
-          title: title,
+        menu.push({
+          title: _('Open {0} Settings', _(this._name)),
           onClick: function(ev) {
             self._openSettings(ev)
           }
-        }], ev)
+        });
       }
     }
+
+    API.createMenu(menu, ev);
   };
 
   /**
@@ -420,6 +440,7 @@
       left: validNumber(this._position.right) ? null : this._position.left,
       bottom: this._position.bottom,
       top: validNumber(this._position.bottom) ? null : this._position.top,
+      locked: this._locked,
       settings: {
         tree: this._options.settings.tree
       }
@@ -526,6 +547,20 @@
   };
 
   /**
+   * Lock widget (make unmoveable)
+   */
+  Widget.prototype._setLock = function(l) {
+    if ( typeof l !== 'boolean' ) {
+      l = !this._locked;
+    }
+    this._locked = l;
+
+    if ( this._$element ) {
+      this._$element.setAttribute('data-locked', String(this._locked));
+    }
+  }
+
+  /**
    * Updates the Widgets position based on internal options
    */
   Widget.prototype._updatePosition = function() {
@@ -622,6 +657,10 @@
    * Gets a setting
    */
   Widget.prototype._getSetting = function(k, def) {
+    if ( typeof this._options.settings === 'undefined' || typeof this._options.settings.tree === 'undefined' ) {
+      return def;
+    }
+
     var value = this._options.settings.tree[k];
     return typeof value === 'undefined' ? def : value;
   };
@@ -680,6 +719,7 @@
   Widget.prototype.onContextMenu = function(ev) {
     // Implement in your widget.
     // You can return true to prevent default context action.
+    // Or an array of elements to append to the default menu.
   };
 
   /**
