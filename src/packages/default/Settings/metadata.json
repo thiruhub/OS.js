@@ -49,7 +49,6 @@
     {"src": "module-pm.js", "type": "javascript"},
     {"src": "module-store.js", "type": "javascript"},
     {"src": "module-panel.js", "type": "javascript"},
-    {"src": "module-widget.js", "type": "javascript"},
     {"src": "module-user.js", "type": "javascript"},
     {"src": "module-users.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"},
