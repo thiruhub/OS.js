@@ -28,9 +28,6 @@
  * @licence Simplified BSD License
  */
 
-/**
- * Handles user login attempts
- */
 module.exports.login = function(instance, http, resolve, reject) {
   var groups = ['admin'];
 
@@ -49,48 +46,26 @@ module.exports.login = function(instance, http, resolve, reject) {
   });
 };
 
-/**
- * Handles user logout attempts
- */
 module.exports.logout = function(instance, http, resolve, reject) {
   resolve(true);
 };
 
-/**
- * Handles user settings storage
- */
 module.exports.settings = function(instance, http, resolve, reject) {
   resolve(true);
 };
 
-/**
- * Handler user management
- *
- * http.data.commands = [list, add, remove, edit, passwd]
- * http.data.args = arguments
- * http.data.args.user = username
- */
 module.exports.manage = function(instance, http, resolve, reject) {
   reject('Not available');
 };
 
-/**
- * Runs when a HTTP request is made
- */
 module.exports.initSession = function(instance, http, resolve, reject) {
   resolve(true);
 };
 
-/**
- * Checks the given permission
- */
-module.exports.checkPermission = function(instance, http, resolve, reject, group, options) {
+module.exports.checkPermission = function(instance, http, resolve, reject, type, options) {
   resolve(true);
 };
 
-/**
- * Checks if a session is available
- */
 module.exports.checkSession = function(instance, http, resolve, reject) {
   if ( http.session.get('username') ) {
     resolve();
@@ -99,14 +74,8 @@ module.exports.checkSession = function(instance, http, resolve, reject) {
   }
 };
 
-/**
- * When module is registered upon initialization
- */
 module.exports.register = function(instance, config) {
 };
 
-/**
- * When module is destroyed upon shutdown
- */
 module.exports.destroy = function() {
 };

@@ -81,6 +81,15 @@ var VFS = {
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Performs a VFS request
+ *
+ * @param   {ServerInstance}   instance      OS.js instance
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           args          API Call Arguments
+ */
 module.exports.request = function(instance, http, req, resolve, reject) {
   if ( typeof VFS[req.method] === 'function' ) {
     VFS[req.method](instance, http, req.data, resolve, reject);
@@ -89,7 +98,30 @@ module.exports.request = function(instance, http, req, resolve, reject) {
   }
 };
 
+/**
+ * Creates a new Readable stream
+ *
+ * @param   {ServerInstance}   instance      OS.js instance
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {String}           path          Virtual path
+ *
+ * @return  {Promise}
+ */
 module.exports.createReadStream = createReadStream;
+
+/**
+ * Creates a new Writeable stream
+ *
+ * @param   {ServerInstance}   instance      OS.js instance
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {String}           path          Virtual path
+ *
+ * @return  {Promise}
+ */
 module.exports.createWriteStream = createWriteStream;
+
+/**
+ * The name of your module
+ */
 module.exports.name = 'EXAMPLE';
 

@@ -52,8 +52,8 @@ module.exports.initSession = function(instance, http) {
  *
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
- * @param   {String}           group         Group name
- * @param   {Object}           [options]     Group options
+ * @param   {String}           type          Permission type
+ * @param   {Object}           [options]     Permission options/arguments
  *
  * @function checkPermission
  * @memberof lib.auth
