@@ -283,9 +283,9 @@ function request(http) {
   }
 
   // Wrapper for checking permissions
-  function _checkPermission(group, options) {
+  function _checkPermission(type, options) {
     return new Promise(function(resolve, reject) {
-      if ( ['login'].indexOf(group) !== -1 ) {
+      if ( type === 'api' && options.method === 'login' ) {
         resolve();
       } else {
         _osjs.auth.checkSession(instance, http).then(function() {
@@ -294,7 +294,7 @@ function request(http) {
       }
     }).then(function() {
       return new Promise(function(resolve, reject) {
-        _osjs.auth.checkPermission(instance, http, group, options).then(function() {
+        _osjs.auth.checkPermission(instance, http, type, options).then(function() {
           resolve();
         }).catch(_rejectResponse);
       });
