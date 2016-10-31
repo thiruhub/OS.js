@@ -28,7 +28,6 @@
  * @licence Simplified BSD License
  */
 
-// TODO: Add back group mountpoint support
 // TODO: Secure VFS paths in filesystem (resolve and match)
 
 /**

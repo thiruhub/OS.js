@@ -32,11 +32,13 @@
  * @namespace lib.vfs
  */
 
+const _auth = require('./auth.js');
+
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ///////////////////////////////////////////////////////////////////////////////
 
-function findTransport(instance, method, args) {
+function findTransport(instance, http, method, args) {
   var transportName = '__default__';
 
   const writeableMap = ['upload', 'write', 'delete', 'copy', 'move', 'mkdir'];
@@ -55,6 +57,7 @@ function findTransport(instance, method, args) {
     }
   };
 
+  const groups = instance.CONFIG.vfs.groups || {};
   const mountpoints = instance.CONFIG.vfs.mounts || {};
   const query = (argumentMap[method] || argumentMap._default )(args);
   const parts = query.split(/(.*)\:\/\/(.*)/);
@@ -71,6 +74,12 @@ function findTransport(instance, method, args) {
     }
 
     if ( mount.enabled === false || (mount.ro === true && writeableMap.indexOf(method) !== -1) ) {
+      return false;
+    }
+  }
+
+  if ( groups[parsed.protocol] ) {
+    if ( !_auth.hasGroup(instance, http, groups[parsed.protocol]) ) {
       return false;
     }
   }
@@ -102,7 +111,7 @@ function findTransport(instance, method, args) {
 module.exports.request = function(instance, http, resolve, reject) {
   const data = (http.request && http.request.method) === 'GET' ? {path: http.endpoint.replace(/(^get\/)?/, '')} : http.data;
   const fn = http.request.method === 'GET' ? 'read' : http.endpoint;
-  const found = findTransport(instance, fn, data);
+  const found = findTransport(instance, http, fn, data);
 
   if ( found === false ) {
     return reject('Operation denied!');
@@ -130,7 +139,7 @@ module.exports.request = function(instance, http, resolve, reject) {
  * @memberof lib.vfs
  */
 module.exports.createReadStream = function(instance, http, path) {
-  const found = findTransport(instance, 'read', {path: path});
+  const found = findTransport(instance, http, 'read', {path: path});
   return found.transport.createReadStream(instance, http, path);
 };
 
@@ -147,7 +156,7 @@ module.exports.createReadStream = function(instance, http, path) {
  * @memberof lib.vfs
  */
 module.exports.createWriteStream = function(instance, http, path) {
-  const found = findTransport(instance, 'read', {path: path});
+  const found = findTransport(instance, http, 'read', {path: path});
   return found.transport.createWriteStream(instance, http, path);
 };
 

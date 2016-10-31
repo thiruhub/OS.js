@@ -78,3 +78,36 @@ module.exports.checkSession = function(instance, http) {
     instance.AUTH.checkSession(instance, http, resolve, reject);
   });
 };
+
+/**
+ * Checks if user has given group(s)
+ *
+ * @param   {ServerInstance}   instance      OS.js instance
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {String|Array}     groupList     Group(s)
+ *
+ * @function hasGroup
+ * @memberof lib.auth
+ */
+module.exports.hasGroup = function(instance, http, groupList) {
+  var userGroups = [];
+  try {
+    userGroups = JSON.parse(http.session.get('groups')) || [];
+  } catch ( e ) {};
+
+  if ( userGroups.indexOf('admin') !== -1 ) {
+    return true;
+  }
+
+  if ( !(groupList instanceof Array) ) {
+    groupList = [groupList];
+  }
+
+  return groupList.some(function(name) {
+    if ( userGroups.indexOf(name) !== -1 ) {
+      return true;
+    }
+
+    return false;
+  });
+};
