@@ -138,7 +138,7 @@ function loadConfiguration(opts) {
  * Loads and registers all API methods
  */
 function loadAPI() {
-  var dirname = _path.join(instance.DIRS.modules, 'api');
+  const dirname = _path.join(instance.DIRS.modules, 'api');
 
   function _load(resolve, reject) {
     _fs.readdir(dirname, function(err, list) {
@@ -148,7 +148,7 @@ function loadAPI() {
 
       _osjs.utils.iterate(list, function(filename, index, next) {
         if ( filename.substr(0, 1) !== '.' ) {
-          var path = _path.join(dirname, filename);
+          const path = _path.join(dirname, filename);
           instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{API}', path.replace(instance.DIRS.root, ''));
           _importAPI(path);
         }
@@ -167,7 +167,7 @@ function loadAuth() {
   const name = instance.CONFIG.handler || 'demo';
 
   function _load(resolve, reject) {
-    var path = _path.join(instance.DIRS.modules, 'auth/' + name + '.js');
+    const path = _path.join(instance.DIRS.modules, 'auth/' + name + '.js');
     instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{Auth}', path.replace(instance.DIRS.root, ''));
 
     const a = require(path);
@@ -184,7 +184,7 @@ function loadAuth() {
  * Loads and registers VFS module(s)
  */
 function loadVFS() {
-  var dirname = _path.join(instance.DIRS.modules, 'vfs');
+  const dirname = _path.join(instance.DIRS.modules, 'vfs');
 
   function _load(resolve, reject) {
     _fs.readdir(dirname, function(err, list) {
@@ -194,7 +194,7 @@ function loadVFS() {
 
       _osjs.utils.iterate(list, function(filename, index, next) {
         if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
-          var path = _path.join(dirname, filename);
+          const path = _path.join(dirname, filename);
           instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{VFS}', path.replace(instance.DIRS.root, ''));
           instance.VFS.push(require(path));
         }
@@ -210,7 +210,7 @@ function loadVFS() {
  * Loads generated package manifest
  */
 function registerPackages(server) {
-  var path = _path.join(instance.DIRS.server, 'packages.json');
+  const path = _path.join(instance.DIRS.server, 'packages.json');
   instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{Configuration}', path.replace(instance.DIRS.root, ''));
 
   function _load(resolve, reject) {
@@ -223,7 +223,7 @@ function registerPackages(server) {
       const packages = manifest[instance.DIST];
 
       Object.keys(packages).forEach(function(path) {
-        var check = _path.join(instance.DIRS.packages, path, 'api.js');
+        const check = _path.join(instance.DIRS.packages, path, 'api.js');
         if ( _fs.existsSync(check) ) {
           instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{ApplicationAPI}', check.replace(instance.DIRS.root, ''));
           const module = require(check);

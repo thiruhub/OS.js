@@ -37,7 +37,7 @@
  * @param   {Function}         reject        Reject the promise
  */
 module.exports.login = function(instance, http, resolve, reject) {
-  var groups = ['admin'];
+  const groups = ['admin'];
 
   http.session.set('username', 'demo');
   http.session.set('groups', JSON.stringify(groups));

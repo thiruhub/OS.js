@@ -30,7 +30,7 @@ function createWriteStream(instance, http, path) {
 // VFS METHODS
 ///////////////////////////////////////////////////////////////////////////////
 
-var VFS = {
+const VFS = {
 
   read: function(instance, http, args, resolve, reject) {
     reject('Not implemented');

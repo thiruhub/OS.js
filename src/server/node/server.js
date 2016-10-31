@@ -29,6 +29,8 @@
  */
 
 // TODO: Secure VFS paths in filesystem (resolve and match)
+// TODO: Add string-loglevel support in logger
+// TODO: Make sure same HTTP error codes are sent as in old codebase
 
 /**
  * @namespace server
@@ -90,8 +92,8 @@ function proxyCall(instance, proxy, request, response) {
 
   function _getMatcher(k) {
     var matcher = k;
-    var isRegexp = k.match(/^regexp\/(.*)\/([a-z]+)?$/);
 
+    const isRegexp = k.match(/^regexp\/(.*)\/([a-z]+)?$/);
     if ( isRegexp && isRegexp.length === 3 ) {
       matcher = new RegExp(isRegexp[1], isRegexp[2] || '');
     } else {
@@ -114,17 +116,17 @@ function proxyCall(instance, proxy, request, response) {
   }
 
   function isStringMatch(m, u) {
-    var rm = m.replace(/^\//, '').replace(/\/$/, '');
-    var um = u.replace(/^\//, '').replace(/\/$/, '');
+    const rm = m.replace(/^\//, '').replace(/\/$/, '');
+    const um = u.replace(/^\//, '').replace(/\/$/, '');
     return rm === um;
   }
 
-  var proxies = instance.CONFIG.proxies;
+  const proxies = instance.CONFIG.proxies;
   if ( proxy && proxies ) {
     return !Object.keys(proxies).every(function(k) {
-      var matcher = _getMatcher(k);
+      const matcher = _getMatcher(k);
       if ( typeof matcher === 'string' ? isStringMatch(matcher, request.url) : matcher.test(request.url) ) {
-        var pots = _getOptions(request.url, matcher, proxies[k]);
+        const pots = _getOptions(request.url, matcher, proxies[k]);
 
         logger.log(logger.INFO, logger.colored('<<<', 'bold'), request.url);
         logger.log(logger.INFO, logger.colored('>>>', 'grey', 'bold'), logger.colored(('PROXY ' + k + ' => ' + pots.target), 'yellow'));
@@ -200,7 +202,7 @@ function createHttpResponder(instance, response) {
         if ( !exists ) {
           _error('File not found', 404);
         } else {
-          var stream = _fs.createReadStream(path, {
+          const stream = _fs.createReadStream(path, {
             bufferSize: 64 * 1024
           });
           _stream(path, stream, code);
@@ -264,7 +266,7 @@ function createHttpObject(request, response, path, data, responder, session_id, 
         return _session.set(session_id, k, v === null ? null : String(v));
       },
       get: function(k) {
-        var v = _session.get(session_id, k);
+        const v = _session.get(session_id, k);
         return v !== false ? v[0] : false;
       }
     }

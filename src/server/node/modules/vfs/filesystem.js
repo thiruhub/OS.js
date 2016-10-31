@@ -225,7 +225,7 @@ function readDir(instance, query, real, filter) {
 // VFS METHODS
 ///////////////////////////////////////////////////////////////////////////////
 
-var VFS = {
+const VFS = {
 
   exists: function(instance, http, args, resolve, reject) {
     const resolved = resolveRequestPath(instance, http, args.path);
