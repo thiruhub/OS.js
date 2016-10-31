@@ -34,7 +34,7 @@
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  */
 module.exports.login = function(instance, http, resolve, reject) {
   var groups = ['admin'];
@@ -60,7 +60,7 @@ module.exports.login = function(instance, http, resolve, reject) {
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  */
 module.exports.logout = function(instance, http, resolve, reject) {
   resolve(true);
@@ -72,7 +72,7 @@ module.exports.logout = function(instance, http, resolve, reject) {
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  */
 module.exports.settings = function(instance, http, resolve, reject) {
   resolve(true);
@@ -88,7 +88,7 @@ module.exports.settings = function(instance, http, resolve, reject) {
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  */
 module.exports.manage = function(instance, http, resolve, reject) {
   reject('Not available');
@@ -100,7 +100,7 @@ module.exports.manage = function(instance, http, resolve, reject) {
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  */
 module.exports.initSession = function(instance, http, resolve, reject) {
   resolve(true);
@@ -112,7 +112,7 @@ module.exports.initSession = function(instance, http, resolve, reject) {
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  * @param   {String}           type          Permission type (vfs, api, package)
  * @param   {Object}           options       Permission options/arguments
  */
@@ -126,7 +126,7 @@ module.exports.checkPermission = function(instance, http, resolve, reject, type,
  * @param   {ServerInstance}   instance      OS.js instance
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve the promise
- * @parm    {Function}         reject        Reject the promise
+ * @param   {Function}         reject        Reject the promise
  */
 module.exports.checkSession = function(instance, http, resolve, reject) {
   if ( http.session.get('username') ) {
