@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-// TODO: Read-only in osjs://
+// TODO: Add back group mountpoint support
 // TODO: Secure VFS paths in filesystem (resolve and match)
 
 /**

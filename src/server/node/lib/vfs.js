@@ -32,42 +32,51 @@
  * @namespace lib.vfs
  */
 
-const gates = {
-  _default: function(args, dest) {
-    return args.path;
-  },
-  freeSpace: function(args) {
-    return args.root;
-  },
-  move: function(args, dest) {
-    return dest ? args.dest : args.src;
-  },
-  copy: function(args, dest) {
-    return dest ? args.dest : args.src;
-  }
-};
-
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ///////////////////////////////////////////////////////////////////////////////
 
 function findTransport(instance, method, args) {
-  const query = (method && gates[method]) ? gates[method](args) : gates._default(args);
+  var transportName = '__default__';
+
+  const writeableMap = ['upload', 'write', 'delete', 'copy', 'move', 'mkdir'];
+  const argumentMap = {
+    _default: function(args, dest) {
+      return args.path;
+    },
+    freeSpace: function(args) {
+      return args.root;
+    },
+    move: function(args, dest) {
+      return dest ? args.dest : args.src;
+    },
+    copy: function(args, dest) {
+      return dest ? args.dest : args.src;
+    }
+  };
+
+  const mountpoints = instance.CONFIG.vfs.mounts || {};
+  const query = (argumentMap[method] || argumentMap._default )(args);
   const parts = query.split(/(.*)\:\/\/(.*)/);
-  const parsed = Object.freeze({
+  const parsed = {
     query: query,
     protocol: parts[1],
     path: String(parts[2]).replace(/^\/+?/, '/')
-  });
+  };
 
-  var transportName = '__default__';
-  var mountpoints = instance.CONFIG.vfs.mounts || {};
-  if ( typeof mountpoints[parsed.protocol] === 'object' ) {
-    transportName = mountpoints[parsed.protocol].transport;
+  const mount = mountpoints[parsed.protocol];
+  if ( typeof mount === 'object' ) {
+    if ( typeof mount.transport === 'string' ) {
+      transportName = mount.transport;
+    }
+
+    if ( mount.enabled === false || (mount.ro === true && writeableMap.indexOf(method) !== -1) ) {
+      return false;
+    }
   }
 
   return Object.freeze({
-    parsed: parsed,
+    parsed: Object.freeze(parsed),
     transport: instance.VFS.find(function(module) {
       return module.name === transportName;
     })
@@ -94,6 +103,12 @@ module.exports.request = function(instance, http, resolve, reject) {
   const data = (http.request && http.request.method) === 'GET' ? {path: http.endpoint.replace(/(^get\/)?/, '')} : http.data;
   const fn = http.request.method === 'GET' ? 'read' : http.endpoint;
   const found = findTransport(instance, fn, data);
+
+  if ( found === false ) {
+    return reject('Operation denied!');
+  } else if ( !found.transport ) {
+    return reject('Cannot find VFS module for: ' + found.parsed.query);
+  }
 
   found.transport.request(instance, http, {
     query: found.parsed.query,

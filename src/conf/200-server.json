@@ -6,7 +6,10 @@
       "proxy": false,
       "mounts": {
         "home": "%DROOT%/vfs/home/%USERNAME%",
-        "osjs": "%DROOT%/%DIST%",
+        "osjs": {
+          "ro": true,
+          "destination": "%DROOT%/%DIST%"
+        },
         "shared": "%DROOT%/vfs/public"
       },
       "groups": {

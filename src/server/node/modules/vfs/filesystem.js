@@ -51,6 +51,11 @@ function resolveRequestPath(instance, http, query) {
   // Figure out if this mountpoint is a filesystem path, or another transport
   var found = mountpoints[protocol] || mountpoints['*'];
   var real = null;
+
+  if ( typeof found === 'object' ) {
+    found = found.destination;
+  }
+
   if ( typeof found === 'string' ) {
     const rmap = {
       '%DIST%': function() {
@@ -328,7 +333,6 @@ var VFS = {
   },
 
   delete: function(instance, http, args, resolve, reject) {
-    // TODO: Check protected path
     const resolved = resolveRequestPath(instance, http, args.path);
     if ( ['', '.', '/'].indexOf() !== -1 ) {
       return reject('Permission denied');

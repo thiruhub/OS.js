@@ -268,7 +268,7 @@ function registerPackages(server) {
 function request(http) {
   // We use JSON as default responses, no matter what
   function _rejectResponse(err) {
-    instance.LOGGER.log(instance.LOGGER.ERROR, err, err.stack || '<no stack trace>');
+    instance.LOGGER.log(instance.LOGGER.ERROR, instance.LOGGER.colored(err, 'red'), err.stack || '<no stack trace>');
 
     http.respond.json({
       error: String(err),
