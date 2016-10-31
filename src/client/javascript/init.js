@@ -666,9 +666,9 @@
       initPreload,
       initHandler,
       initVFS,
+      initSettingsManager,
       initPackageManager,
       initExtensions,
-      initSettingsManager,
       initSearch,
       function(cfg, cb) {
         OSjs.Core.getMountManager().restore(cb);

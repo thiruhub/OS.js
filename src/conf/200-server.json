@@ -4,8 +4,9 @@
     "srcdir": "src",
     "vfs": {
       "proxy": false,
-      "homes":  "%DROOT%/vfs/home",
       "mounts": {
+        "home": "%DROOT%/vfs/home/%USERNAME%",
+        "osjs": "%DROOT%/%DIST%",
         "shared": "%DROOT%/vfs/public"
       },
       "groups": {

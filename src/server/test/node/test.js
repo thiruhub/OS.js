@@ -1,5 +1,6 @@
 (function(_path, _fs) {
   /*eslint strict: ["warn"]*/
+  return; // TODO
 
   var rootDir = _fs.realpathSync(__dirname + '/../../../../');
   var serverRoot = _path.join(rootDir, 'src', 'server', 'node');
