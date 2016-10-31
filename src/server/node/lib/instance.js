@@ -164,14 +164,15 @@ function loadAPI() {
  * Loads and registers Authentication module(s)
  */
 function loadAuth() {
-  var name = 'demo';
+  const name = instance.CONFIG.handler || 'demo';
 
   function _load(resolve, reject) {
     var path = _path.join(instance.DIRS.modules, 'auth/' + name + '.js');
     instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{Auth}', path.replace(instance.DIRS.root, ''));
 
-    var a = require(path);
-    a.register(instance);
+    const a = require(path);
+    const c = instance.CONFIG.handlers[name] || {};
+    a.register(instance, c);
     instance.AUTH = a;
     resolve();
   }
@@ -302,7 +303,7 @@ function request(http) {
 
   // Wrappers for performing API calls
   function _vfsCall() {
-    _checkPermission('_fs', {method: http.endpoint.replace(/(^get\/)?/, ''), args: http.data}).then(function() {
+    _checkPermission('vfs', {method: http.endpoint.replace(/(^get\/)?/, ''), args: http.data}).then(function() {
       (new Promise(function(resolve, reject) {
         _osjs.vfs.request(instance, http, resolve, reject);
       })).then(_resolveResponse).catch(_rejectResponse);
@@ -310,7 +311,7 @@ function request(http) {
   }
 
   function _apiCall() {
-    _checkPermission(http.endpoint, http.data).then(function() {
+    _checkPermission('api', {method: http.endpoint}, http.data).then(function() {
       (new Promise(function(resolve, reject) {
         instance.API[http.endpoint](instance, http, resolve, reject);
       })).then(_resolveResponse).catch(_rejectResponse);
@@ -329,7 +330,7 @@ function request(http) {
 
     const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
     if ( pmatch && pmatch.length === 3 ) {
-      _checkPermission('_package', {path: pmatch[1]}).then(function() {
+      _checkPermission('package', {path: pmatch[1]}).then(function() {
         _osjs.auth.checkSession(instance, http)
           .then(_serve).catch(_deny);
       }).catch(_deny);

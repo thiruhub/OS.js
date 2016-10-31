@@ -102,7 +102,7 @@ module.exports.checkSession = function(instance, http, resolve, reject) {
 /**
  * When module is registered upon initialization
  */
-module.exports.register = function(instance) {
+module.exports.register = function(instance, config) {
 };
 
 /**
