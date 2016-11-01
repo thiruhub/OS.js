@@ -43,14 +43,10 @@ module.exports.login = function(instance, http, resolve, reject) {
   http.session.set('groups', JSON.stringify(groups));
 
   resolve({
-    userData: {
-      id: 0,
-      username: 'Username',
-      name: 'Full User Name',
-      groups: groups
-    },
-    userSettings: {},
-    blacklistedPackages: []
+    id: 0,
+    username: 'Username',
+    name: 'Full User Name',
+    groups: groups
   });
 };
 
@@ -63,18 +59,6 @@ module.exports.login = function(instance, http, resolve, reject) {
  * @param   {Function}         reject        Reject the promise
  */
 module.exports.logout = function(instance, http, resolve, reject) {
-  resolve(true);
-};
-
-/**
- * Handles user settings storage
- *
- * @param   {ServerInstance}   instance      OS.js instance
- * @param   {ServerRequest}    http          OS.js Server Request
- * @param   {Function}         resolve       Resolve the promise
- * @param   {Function}         reject        Reject the promise
- */
-module.exports.settings = function(instance, http, resolve, reject) {
   resolve(true);
 };
 

@@ -1,9 +1,6 @@
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Shadow Handler: Login screen and session/settings handling via database
- * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
- *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
@@ -31,34 +28,21 @@
  * @licence Simplified BSD License
  */
 
-//
-// See doc/handler-shadow.txt
-//
-
-(function(API, Utils, VFS) {
+(function(API, Utils, Connection) {
   'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HANDLER
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * @extends OSjs.Core._Handler
-   * @class
-   */
-  function ShadowHandler() {
-    OSjs.Core._Handler.apply(this, arguments);
+  function HttpConnection() {
+    Connection.apply(this, arguments);
   }
 
-  ShadowHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
-  ShadowHandler.constructor = OSjs.Core._Handler;
-
-  OSjs.Core._Handler.use.defaults(ShadowHandler);
+  HttpConnection.prototype = Object.create(Connection.prototype);
+  HttpConnection.constructor = Connection;
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Handler = ShadowHandler;
+  OSjs.Connections = OSjs.Connections || {};
+  OSjs.Connections.http = HttpConnection;
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.Core.Connection);

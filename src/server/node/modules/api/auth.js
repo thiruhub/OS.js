@@ -44,7 +44,23 @@
  * @memberof modules.api
  */
 module.exports.login = function(instance, http, resolve, reject) {
-  return instance.AUTH.login.apply(null, arguments);
+  new Promise(function(res, rej) {
+    instance.AUTH.login(instance, http, res, rej);
+  }).then(function(userData) {
+    new Promise(function(res, rej) {
+      instance.STORAGE.getSettings(instance, http, res, rej);
+    }).then(function(userSettings) {
+      new Promise(function(res, rej) {
+        instance.STORAGE.getSettings(instance, http, res, rej);
+      }).then(function(blacklist) {
+        resolve({
+          userData: userData,
+          userSettings: userSettings,
+          blacklistedPackages: blacklist
+        });
+      }).catch(reject);
+    }).catch(reject);
+  }).catch(reject);
 };
 
 /**
@@ -62,17 +78,3 @@ module.exports.logout = function(instance, http, resolve, reject) {
   return instance.AUTH.logout.apply(null, arguments);
 };
 
-/**
- * Attempt to store settings
- *
- * @param   {ServerInstance}   instance      OS.js instance
- * @param   {ServerRequest}    http          OS.js Server Request
- * @param   {Function}         resolve       Resolves the Promise
- * @param   {Function}         reject        Rejects the Promise
- *
- * @function settings
- * @memberof modules.api
- */
-module.exports.settings = function(instance, http, resolve, reject) {
-  return instance.AUTH.settings.apply(null, arguments);
-};

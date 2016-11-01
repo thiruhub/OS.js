@@ -28,42 +28,20 @@
  * @licence Simplified BSD License
  */
 
-module.exports.login = function(instance, http, resolve, reject) {
-  const groups = ['admin'];
-
-  http.session.set('username', 'demo');
-  http.session.set('groups', JSON.stringify(groups));
-
-  resolve({
-    id: 0,
-    username: 'demo',
-    name: 'Demo User',
-    groups: groups
-  });
-};
-
-module.exports.logout = function(instance, http, resolve, reject) {
+module.exports.setSettings = function(instance, http, resolve, reject) {
   resolve(true);
 };
 
-module.exports.manage = function(instance, http, resolve, reject) {
-  reject('Not available');
+module.exports.getSettings = function(instance, http, resolve, reject) {
+  resolve({});
 };
 
-module.exports.initSession = function(instance, http, resolve, reject) {
+module.exports.getBlacklist = function(instance, http, resolve, reject) {
+  resolve([]);
+};
+
+module.exports.setBlacklist = function(instance, http, resolve, reject) {
   resolve(true);
-};
-
-module.exports.checkPermission = function(instance, http, resolve, reject, type, options) {
-  resolve(true);
-};
-
-module.exports.checkSession = function(instance, http, resolve, reject) {
-  if ( http.session.get('username') ) {
-    resolve();
-  } else {
-    reject('You have no OS.js Session, please log in!');
-  }
 };
 
 module.exports.register = function(instance, config) {

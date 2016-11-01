@@ -47,6 +47,7 @@
  * @property  {Object}        API         API methods dictionary
  * @property  {Array}         VFS         VFS Transport module list
  * @property  {Object}        AUTH        The Authentication module
+ * @property  {Object}        STORAGE     The Storage module
  * @property  {Object}        DIRS        Directories tuple
  * @typedef ServerInstance
  */
@@ -73,6 +74,7 @@ const instance = {
   API: {},
   VFS: [],
   AUTH: null,
+  STORAGE: null,
   DIRS: {
     root: _path.resolve(__dirname + '/../../../../'),
     modules: _path.resolve(__dirname + '/../modules'),
@@ -164,16 +166,36 @@ function loadAPI() {
  * Loads and registers Authentication module(s)
  */
 function loadAuth() {
-  const name = instance.CONFIG.handler || 'demo';
+  const name = instance.CONFIG.http.authenticator || 'demo';
 
   function _load(resolve, reject) {
     const path = _path.join(instance.DIRS.modules, 'auth/' + name + '.js');
     instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{Auth}', path.replace(instance.DIRS.root, ''));
 
     const a = require(path);
-    const c = instance.CONFIG.handlers[name] || {};
+    const c = instance.CONFIG.modules.auth[name] || {};
     a.register(instance, c);
     instance.AUTH = a;
+    resolve();
+  }
+
+  return new Promise(_load);
+}
+
+/**
+ * Loads and registers Storage module(s)
+ */
+function loadStorage() {
+  const name = instance.CONFIG.http.storage || 'demo';
+
+  function _load(resolve, reject) {
+    const path = _path.join(instance.DIRS.modules, 'storage/' + name + '.js');
+    instance.LOGGER.lognt(instance.LOGGER.INFO, '+++', '{Storage}', path.replace(instance.DIRS.root, ''));
+
+    const a = require(path);
+    const c = instance.CONFIG.modules.storage[name] || {};
+    a.register(instance, c);
+    instance.STORAGE = a;
     resolve();
   }
 
@@ -412,6 +434,7 @@ module.exports.init = function start(opts, start) {
   loadConfiguration(opts)
     .then(loadAPI)
     .then(loadAuth)
+    .then(loadStorage)
     .then(loadVFS)
     .then(startup);
 };

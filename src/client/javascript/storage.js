@@ -13,7 +13,7 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -28,46 +28,64 @@
  * @licence Simplified BSD License
  */
 
-module.exports.login = function(instance, http, resolve, reject) {
-  const groups = ['admin'];
+(function(API, Utils) {
+  'use strict';
 
-  http.session.set('username', 'demo');
-  http.session.set('groups', JSON.stringify(groups));
-
-  resolve({
-    id: 0,
-    username: 'demo',
-    name: 'Demo User',
-    groups: groups
-  });
-};
-
-module.exports.logout = function(instance, http, resolve, reject) {
-  resolve(true);
-};
-
-module.exports.manage = function(instance, http, resolve, reject) {
-  reject('Not available');
-};
-
-module.exports.initSession = function(instance, http, resolve, reject) {
-  resolve(true);
-};
-
-module.exports.checkPermission = function(instance, http, resolve, reject, type, options) {
-  resolve(true);
-};
-
-module.exports.checkSession = function(instance, http, resolve, reject) {
-  if ( http.session.get('username') ) {
-    resolve();
-  } else {
-    reject('You have no OS.js Session, please log in!');
+  /**
+   * Storage Base Class
+   *
+   * @abstract
+   * @constructor Storage
+   * @memberof OSjs.Core
+   */
+  function Storage(handler) {
+    this.handler = handler;
   }
-};
 
-module.exports.register = function(instance, config) {
-};
+  /**
+   * Initializes the Storage
+   *
+   * @function init
+   * @memberof OSjs.Core.Storage#
+   *
+   * @param   {CallbackHandler}      callback        Callback function
+   */
+  Storage.prototype.init = function(callback) {
+    callback(null, true);
+  };
 
-module.exports.destroy = function() {
-};
+  /**
+   * Destroys the Storage
+   *
+   * @function destroy
+   * @memberof OSjs.Core.Storage#
+   */
+  Storage.prototype.destroy = function() {
+    this.handler = null;
+  };
+
+  /**
+   * Saves the settings
+   *
+   * @function settings
+   * @memberof OSjs.Core.Storage#
+   *
+   * @param   {Object}               storage         Settings storage data
+   * @param   {CallbackHandler}      callback        Callback function
+   */
+  Storage.prototype.settings = function(storage, callback) {
+    this.handler.callAPI('settings', {settings: storage}, function(response) {
+      callback(false, response.result);
+    }, function(error) {
+      callback(error);
+    });
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Core.Storage = Storage;
+
+})(OSjs.API, OSjs.Utils);
+

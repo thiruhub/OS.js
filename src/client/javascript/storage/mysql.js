@@ -1,9 +1,6 @@
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Mysql Handler: Login screen and session/settings handling via database
- * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
- *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
@@ -30,35 +27,21 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-
-//
-// See doc/handler-mysql.txt
-//
-
-(function(API, Utils, VFS) {
+(function(API, Utils, Storage) {
   'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HANDLER
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * @extends OSjs.Core._Handler
-   * @class
-   */
-  function MysqlHandler() {
-    OSjs.Core._Handler.apply(this, arguments);
+  function MysqlStorage() {
+    Storage.apply(this, arguments);
   }
 
-  MysqlHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
-  MysqlHandler.constructor = OSjs.Core._Handler;
-
-  OSjs.Core._Handler.use.defaults(MysqlHandler);
+  MysqlStorage.prototype = Object.create(Storage.prototype);
+  MysqlStorage.constructor = Storage;
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Handler = MysqlHandler;
+  OSjs.Storage = OSjs.Storage || {};
+  OSjs.Storage.mysql = MysqlStorage;
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.Core.Storage);

@@ -28,46 +28,21 @@
  * @licence Simplified BSD License
  */
 
-module.exports.login = function(instance, http, resolve, reject) {
-  const groups = ['admin'];
+/**
+ * @namespace modules.api
+ */
 
-  http.session.set('username', 'demo');
-  http.session.set('groups', JSON.stringify(groups));
-
-  resolve({
-    id: 0,
-    username: 'demo',
-    name: 'Demo User',
-    groups: groups
-  });
-};
-
-module.exports.logout = function(instance, http, resolve, reject) {
-  resolve(true);
-};
-
-module.exports.manage = function(instance, http, resolve, reject) {
-  reject('Not available');
-};
-
-module.exports.initSession = function(instance, http, resolve, reject) {
-  resolve(true);
-};
-
-module.exports.checkPermission = function(instance, http, resolve, reject, type, options) {
-  resolve(true);
-};
-
-module.exports.checkSession = function(instance, http, resolve, reject) {
-  if ( http.session.get('username') ) {
-    resolve();
-  } else {
-    reject('You have no OS.js Session, please log in!');
-  }
-};
-
-module.exports.register = function(instance, config) {
-};
-
-module.exports.destroy = function() {
+/**
+ * Attempt to store settings
+ *
+ * @param   {ServerInstance}   instance      OS.js instance
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ *
+ * @function settings
+ * @memberof modules.api
+ */
+module.exports.settings = function(instance, http, resolve, reject) {
+  return instance.STORAGE.setSettings.apply(null, arguments);
 };

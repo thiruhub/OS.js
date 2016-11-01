@@ -45,326 +45,6 @@
 
   var _handlerInstance;
 
-  /**
-   * Attaches options to a XHR call
-   */
-  function appendRequestOptions(data, options) {
-    options = options || {};
-
-    var onprogress = options.onprogress || function() {};
-    var ignore = ['onsuccess', 'onerror', 'onprogress', 'oncanceled'];
-
-    Object.keys(options).forEach(function(key) {
-      if ( ignore.indexOf(key) === -1 ) {
-        data[key] = options[key];
-      }
-    });
-
-    data.onprogress = function(ev) {
-      if ( ev.lengthComputable ) {
-        onprogress(ev, ev.loaded / ev.total);
-      } else {
-        onprogress(ev, -1);
-      }
-    };
-
-    return data;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // DEFAULT CONNECTION CODE
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Default Handler Connection Implementation
-   *
-   * <pre><b>
-   * You only have access to this via the 'Handler' instance
-   * </b></pre>
-   *
-   * @summary Wrappers for communicating over HTTP, WS and NW
-   *
-   * @constructor HandlerConnection
-   * @memberof OSjs.Core
-   */
-  function HandlerConnection(handler) {
-    this.index = 0;
-    this.handler = handler;
-    this.nw = null;
-    this.ws = null;
-
-    if ( (API.getConfig('Connection.Type') === 'nw') ) {
-      this.nw = require('osjs').init({
-        root: process.cwd(),
-        settings: {
-          mimes: API.getConfig('MIME.mapping')
-        },
-        nw: true
-      });
-    }
-
-    this.wsqueue = {};
-  }
-
-  /**
-   * Initializes the instance
-   *
-   * @function init
-   * @memberof OSjs.Core.HandlerConnection#
-   */
-  HandlerConnection.prototype.init = function(callback) {
-    var self = this;
-
-    if ( API.getConfig('Connection.Type') === 'ws' ) {
-      var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
-      var connected = false;
-
-      console.info('Using WebSocket', url);
-
-      this.ws = new WebSocket(url);
-
-      this.ws.onopen = function() {
-        connected = true;
-
-        callback();
-      };
-
-      this.ws.onmessage = function(ev) {
-        var data = JSON.parse(ev.data);
-        var idx = data._index;
-
-        if ( self.wsqueue[idx] ) {
-          delete data._index;
-
-          self.wsqueue[idx](data);
-
-          delete self.wsqueue[idx];
-        }
-      };
-
-      this.ws.onclose = function(ev) {
-        if ( !connected && ev.code !== 3001 ) {
-          callback('WebSocket connection error'); // FIXME: Locale
-        }
-      };
-
-    } else {
-      callback();
-    }
-  };
-
-  /**
-   * Destroys the instance
-   *
-   * @function destroy
-   * @memberof OSjs.Core.HandlerConnection#
-   */
-  HandlerConnection.prototype.destroy = function() {
-    if ( this.ws ) {
-      this.ws.close();
-    }
-
-    this.nw = null;
-    this.ws = null;
-    this._wsRequest = {};
-  };
-
-  /**
-   * Makes a HTTP POST call
-   *
-   * @function callPOST
-   * @memberof OSjs.Core.HandlerConnection#
-   *
-   * @return {Boolean}
-   */
-  HandlerConnection.prototype.callPOST = function(form, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('HandlerConnection::callPOST()', 'error', arguments);
-    };
-
-    Utils.ajax(appendRequestOptions({
-      url: OSjs.VFS.Transports.Internal.path(),
-      method: 'POST',
-      body: form,
-      onsuccess: function(result) {
-        onsuccess(false, result);
-      },
-      onerror: function(result) {
-        onerror('error', null, result);
-      },
-      oncanceled: function(evt) {
-        onerror('canceled', null, evt);
-      }
-    }, options));
-
-    return true;
-  };
-
-  /**
-   * Makes a HTTP GET call
-   *
-   * @function callGET
-   * @memberof OSjs.Core.HandlerConnection#
-   *
-   * @return {Boolean}
-   */
-  HandlerConnection.prototype.callGET = function(args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('HandlerConnection::callGET()', 'error', arguments);
-    };
-
-    var self = this;
-
-    Utils.ajax(appendRequestOptions({
-      url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
-      method: args.method || 'GET',
-      responseType: 'arraybuffer',
-      onsuccess: function(response, xhr) {
-        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
-          onsuccess({error: xhr.statusText || response, result: null});
-          return;
-        }
-        onsuccess({error: false, result: response});
-      },
-      onerror: function() {
-        onerror.apply(self, arguments);
-      }
-    }, options));
-
-    return true;
-  };
-
-  /**
-   * Makes a HTTP XHR call
-   *
-   * @function callXHR
-   * @memberof OSjs.Core.HandlerConnection#
-   *
-   * @return {Boolean}
-   */
-  HandlerConnection.prototype.callXHR = function(url, args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('HandlerConnection::callXHR()', 'error', arguments);
-    };
-
-    var self = this;
-
-    Utils.ajax(appendRequestOptions({
-      url: url,
-      method: 'POST',
-      json: true,
-      body: args,
-      onsuccess: function(/*response, request, url*/) {
-        onsuccess.apply(self.handler, arguments);
-      },
-      onerror: function(/*error, response, request, url*/) {
-        onerror.apply(self.handler, arguments);
-      }
-    }, options));
-
-    return true;
-  };
-
-  /**
-   * Makes a WebSocket call
-   *
-   * @function callWS
-   * @memberof OSjs.Core.HandlerConnection#
-   *
-   * @return {Boolean}
-   */
-  HandlerConnection.prototype.callWS = function(path, args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('HandlerConnection::callWS()', 'error', arguments);
-    };
-
-    var idx = this.index++;
-
-    try {
-      this.ws.send(JSON.stringify({
-        _index: idx,
-        sid: Utils.getCookie('session'),
-        path: '/' + path,
-        args: args
-      }));
-
-      this.wsqueue[idx] = onsuccess || function() {};
-
-      return true;
-    } catch ( e ) {
-      console.warn('callWS() Warning', e.stack, e);
-      onerror(e);
-    }
-
-    return false;
-  };
-
-  /**
-   * Makes a Node NW call
-   *
-   * @function callNW
-   * @memberof OSjs.Core.HandlerConnection#
-   *
-   * @return {Boolean}
-   */
-  HandlerConnection.prototype.callNW = function(method, args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('HandlerConnection::callNW()', 'error', arguments);
-    };
-
-    try {
-      this.nw.request(method.match(/^FS\:/) !== null, method.replace(/^FS\:/, ''), args, function(err, res) {
-        onsuccess({error: err, result: res});
-      });
-
-      return true;
-    } catch ( e ) {
-      console.warn('callNW() Warning', e.stack, e);
-      onerror(e);
-    }
-
-    return false;
-  };
-
-  /**
-   * Wrapper for OS.js API calls
-   *
-   * @function request
-   * @memberof OSjs.Core.HandlerConnection#
-   *
-   * @return {Boolean}
-   */
-  HandlerConnection.prototype.request = function(isVfs, method, args, options, onsuccess, onerror) {
-
-    // Proxy all requests to NW module if required
-    if ( API.getConfig('Connection.Type') === 'nw' ) {
-      return this.callNW(method, args, options, onsuccess, onerror);
-    }
-
-    // Some methods can only be handled via HTTP
-    if ( isVfs ) {
-      if ( method === 'FS:get' ) {
-        return this.callGET(args, options, onsuccess, onerror);
-      } else if ( method === 'FS:upload' ) {
-        return this.callPOST(args, options, onsuccess, onerror);
-      }
-    }
-
-    // Use AJAX or WebSocket for everything else
-    var url = (function() {
-      if ( isVfs ) {
-        return API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
-      }
-      return API.getConfig('Connection.APIURI') + '/' + method;
-    })();
-
-    if ( API.getConfig('Connection.Type') === 'ws' ) {
-      return this.callWS(url, args, options, onsuccess, onerror);
-    }
-
-    return this.callXHR(url, args, options, onsuccess, onerror);
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HANDLING CODE
   /////////////////////////////////////////////////////////////////////////////
@@ -386,7 +66,7 @@
    * @memberof OSjs.Core
    * @see OSjs.Core.getHandler
    */
-  var _Handler = function() {
+  var Handler = function() {
     /*eslint consistent-this: "off"*/
 
     if ( _handlerInstance ) {
@@ -436,7 +116,10 @@
      * @memberof OSjs.Core.Handler#
      * @type {HandlerConnection}
      */
-    this.connection = new HandlerConnection();
+    var conf = API.getConfig('Connection');
+    this.connection = new OSjs.Connections[conf.Type](this);
+    this.authenticator = new OSjs.Auth[conf.Authenticator](this);
+    this.storage = new OSjs.Storage[conf.Storage](this);
 
     _handlerInstance = this;
   };
@@ -450,7 +133,7 @@
    *
    * @param   {CallbackHandler}      callback        Callback function
    */
-  _Handler.prototype.init = function(callback) {
+  Handler.prototype.init = function(callback) {
     console.group('Handler::init()');
 
     var self = this;
@@ -465,10 +148,18 @@
       });
     }
 
-    this.connection.init(function(err, res) {
+    this.connection.init(function(err) {
       console.groupEnd();
 
-      callback(err, res);
+      if ( err ) {
+        callback(err);
+      } else {
+        self.storage.init(function() {
+          self.authenticator.init(function() {
+            callback();
+          });
+        });
+      }
     });
   };
 
@@ -478,9 +169,19 @@
    * @function destroy
    * @memberof OSjs.Core.Handler#
    */
-  _Handler.prototype.destroy = function() {
+  Handler.prototype.destroy = function() {
     Utils.$unbind(window, 'offline');
     Utils.$unbind(window, 'online');
+
+    if ( this.authenticator ) {
+      this.authenticator.destroy();
+    }
+    this.authenticator = null;
+
+    if ( this.storage ) {
+      this.storage.destroy();
+    }
+    this.storage = null;
 
     if ( this.connection ) {
       this.connection.destroy();
@@ -496,23 +197,19 @@
    * @function login
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {String}           username      Login username
-   * @param   {String}           password      Login password
+   * @param   {Object}           login         Login data
    * @param   {CallbackHandler}  callback      Callback function
    */
-  _Handler.prototype.login = function(username, password, callback) {
-    console.info('Handler::login()', username);
+  Handler.prototype.login = function(login, callback) {
+    console.info('Handler::login()', login);
 
-    var opts = {username: username, password: password};
-    this.callAPI('login', opts, function(response) {
-      if ( response.result ) { // This contains an object with user data
-        callback(false, response.result);
+    var self = this;
+    this.authenticator.login(login, function(err, res) {
+      if ( err ) {
+        callback(err);
       } else {
-        var error = response.error || API._('ERR_LOGIN_INVALID');
-        callback(API._('ERR_LOGIN_FMT', error), false);
+        self.onLogin(res, callback);
       }
-    }, function(error) {
-      callback(API._('ERR_LOGIN_FMT', error), false);
     });
   };
 
@@ -525,22 +222,17 @@
    * @param   {Boolean}          save          Save session?
    * @param   {CallbackHandler}  callback      Callback function
    */
-  _Handler.prototype.logout = function(save, callback) {
+  Handler.prototype.logout = function(save, callback) {
     console.info('Handler::logout()');
 
     var self = this;
 
     function _finished() {
-      var opts = {};
-      self.callAPI('logout', opts, function(response) {
-        if ( response.result ) {
+      self.authenticator.logout(function(err, res) {
+        if ( res  ) {
           self.loggedIn = false;
-          callback(true);
-        } else {
-          callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
         }
-      }, function(error) {
-        callback(false, 'Logout error: ' + error);
+        callback(err, res);
       });
     }
 
@@ -561,7 +253,7 @@
    *
    * @param   {CallbackHandler}  callback      Callback function
    */
-  _Handler.prototype.saveSession = function(callback) {
+  Handler.prototype.saveSession = function(callback) {
     var data = [];
     API.getProcesses().forEach(function(proc, i) {
       if ( proc && (proc instanceof OSjs.Core.Application) ) {
@@ -579,7 +271,7 @@
    *
    * @param   {CallbackHandler}  callback      Callback function
    */
-  _Handler.prototype.getLastSession = function(callback) {
+  Handler.prototype.getLastSession = function(callback) {
     callback = callback || function() {};
 
     var res = OSjs.Core.getSettingsManager().get('UserSession');
@@ -603,7 +295,7 @@
    *
    * @param   {Function}  callback      Callback function => fn()
    */
-  _Handler.prototype.loadSession = function(callback) {
+  Handler.prototype.loadSession = function(callback) {
     callback = callback || function() {};
 
     console.info('Handler::loadSession()');
@@ -627,24 +319,16 @@
    * @param   {Mixed}            storage       Storage data
    * @param   {CallbackHandler}  callback      Callback function
    */
-  _Handler.prototype.saveSettings = function(pool, storage, callback) {
+  Handler.prototype.saveSettings = function(pool, storage, callback) {
     var self = this;
-    var opts = {settings: storage};
-
-    function _save() {
-      self.callAPI('settings', opts, function(response) {
-        callback.call(self, false, response.result);
-      }, function(error) {
-        callback.call(self, error, false);
-      });
-    }
-
     if ( this._saveTimeout ) {
       clearTimeout(this._saveTimeout);
       this._saveTimeout = null;
     }
 
-    setTimeout(_save, 250);
+    setTimeout(function() {
+      self.storage.settings(storage, self, callback);
+    }, 250);
   };
 
   /**
@@ -659,7 +343,7 @@
    *
    * @return  {String}
    */
-  _Handler.prototype.getVFSPath = function(item) {
+  Handler.prototype.getVFSPath = function(item) {
     var base = API.getConfig('Connection.FSURI', '/');
     if ( item ) {
       return base + '/get/' + item.path;
@@ -675,7 +359,7 @@
    *
    * @return  {Object}
    */
-  _Handler.prototype.getAPICallOptions = function() {
+  Handler.prototype.getAPICallOptions = function() {
     return {};
   };
 
@@ -698,7 +382,7 @@
    * @see OSjs.Core.Handler#_callVFS
    * @see OSjs.Core.API.call
    */
-  _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
+  Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
     args = args || {};
     options = Utils.mergeObject(this.getAPICallOptions(), options || {});
     cbSuccess = cbSuccess || function() {};
@@ -727,7 +411,7 @@
    *
    * @return {Boolean}
    */
-  _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
+  Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
     return this.connection.request(false, method, args, options, cbSuccess, cbError);
   };
 
@@ -740,7 +424,7 @@
    *
    * @return {Boolean}
    */
-  _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
+  Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
     return this.connection.request(true, method, args, options, cbSuccess, cbError);
   };
 
@@ -757,7 +441,7 @@
    * @param   {Object}           data          JSON Data from login action (userData, userSettings, etc)
    * @param   {CallbackHandler}  callback      Callback function
    */
-  _Handler.prototype.onLogin = function(data, callback) {
+  Handler.prototype.onLogin = function(data, callback) {
     callback = callback || function() {};
 
     var userSettings = data.userSettings;
@@ -796,8 +480,7 @@
     }
 
     this.loggedIn = true;
-
-    callback();
+    this.authenticator.onLogin(data, callback);
   };
 
   /**
@@ -815,7 +498,7 @@
    * @param   {Object}    vfsArguments  VFS Method Arguments
    * @param   {Function}  callback      Callback function
    */
-  _Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
+  Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
     // callback: (error, result)
     callback(/* continue normal behaviour */);
@@ -836,7 +519,7 @@
    * @param   {Mixed}     vfsResult     VFS Response Result
    * @param   {Function}  callback      Callback function
    */
-  _Handler.prototype.onVFSRequestCompleted = function(vfsModule, vfsMethod, vfsArguments, vfsError, vfsResult, callback) {
+  Handler.prototype.onVFSRequestCompleted = function(vfsModule, vfsMethod, vfsArguments, vfsError, vfsResult, callback) {
     // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
     // callback: (error, result)
     callback(/* continue normal behaviour */);
@@ -848,7 +531,7 @@
    * @function onOnline
    * @memberof OSjs.Core.Handler#
    */
-  _Handler.prototype.onOnline = function() {
+  Handler.prototype.onOnline = function() {
     console.warn('Handler::onOnline()', 'Going online...');
     this.offline = false;
 
@@ -864,7 +547,7 @@
    * @function onOffline
    * @memberof OSjs.Core.Handler#
    */
-  _Handler.prototype.onOffline = function() {
+  Handler.prototype.onOffline = function() {
     console.warn('Handler::onOffline()', 'Going offline...');
     this.offline = true;
 
@@ -882,143 +565,15 @@
    *
    * @return  {Object}      JSON With user data
    */
-  _Handler.prototype.getUserData = function() {
+  Handler.prototype.getUserData = function() {
     return this.userData || {};
   };
-
-  /**
-   * Initializes login screen
-   *
-   * @function initLoginScreen
-   * @memberof OSjs.Core.Handler#
-   * @throws {Error} If the login dom element does not exist
-   */
-  _Handler.prototype.initLoginScreen = function(callback) {
-    var self      = this;
-    var container = document.getElementById('Login');
-    var login     = document.getElementById('LoginForm');
-    var u         = document.getElementById('LoginUsername');
-    var p         = document.getElementById('LoginPassword');
-    var s         = document.getElementById('LoginSubmit');
-
-    if ( !container ) {
-      throw new Error('Could not find Login Form Container');
-    }
-
-    function _restore() {
-      s.removeAttribute('disabled');
-      u.removeAttribute('disabled');
-      p.removeAttribute('disabled');
-    }
-
-    function _lock() {
-      s.setAttribute('disabled', 'disabled');
-      u.setAttribute('disabled', 'disabled');
-      p.setAttribute('disabled', 'disabled');
-    }
-
-    function _login(username, password) {
-      self.login(username, password, function(error, result) {
-        if ( error ) {
-          alert(error);
-          _restore();
-          return;
-        }
-
-        console.debug('Handlers::init()', 'login response', result);
-        container.parentNode.removeChild(container);
-
-        self.onLogin(result, function() {
-          callback();
-        });
-      });
-    }
-
-    login.onsubmit = function(ev) {
-      _lock();
-      if ( ev ) {
-        ev.preventDefault();
-      }
-      _login(u.value, p.value);
-    };
-
-    container.style.display = 'block';
-
-    _restore();
-  };
-
-  /**
-   * Apply certain traits for given class
-   *
-   * Available traits are: defaults, init, login, logout, settings
-   *
-   * Usage: _Handler.use.<trait>(obj)
-   *
-   * @method  {Class}   obj     Class reference
-   *
-   * @function use
-   * @memberof OSjs.Core.Handler
-   */
-  _Handler.use = (function() {
-
-    //
-    // Traits
-    //
-    var traits = {
-      init: function defaultInit(callback) {
-        var self = this;
-        return OSjs.Core._Handler.prototype.init.call(this, function() {
-          self.initLoginScreen(callback);
-        });
-      },
-
-      login: function defaultLogin(username, password, callback) {
-        return OSjs.Core._Handler.prototype.login.apply(this, arguments);
-      },
-
-      logout: function defaultLogout(save, callback) {
-        return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
-      },
-
-      settings: function defaultSettings(pool, storage, callback) {
-        return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
-      }
-    };
-
-    //
-    // Helpers
-    //
-
-    function applyTraits(obj, add) {
-      add.forEach(function(fn) {
-        obj.prototype[fn] = traits[fn];
-      });
-    }
-
-    //
-    // Exports
-    //
-    var exports = {
-      defaults: function(obj) {
-        applyTraits(obj, Object.keys(traits));
-      }
-    };
-
-    Object.keys(traits).forEach(function(k) {
-      exports[k] = function(obj) {
-        applyTraits(obj, [k]);
-      };
-    });
-
-    return exports;
-  })();
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core._Handler = _Handler;
-  OSjs.Core.Handler  = null;
+  OSjs.Core.Handler = Handler;
 
   /**
    * Get running 'Handler' instance

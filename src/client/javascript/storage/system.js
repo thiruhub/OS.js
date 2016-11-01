@@ -1,9 +1,6 @@
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * PAM Handler: Login screen and session/settings handling via database
- * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
- *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
@@ -30,35 +27,21 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-
-//
-// See doc/handler-pam.txt
-//
-
-(function(API, Utils, VFS) {
+(function(API, Utils, Storage) {
   'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HANDLER
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * @extends OSjs.Core._Handler
-   * @class
-   */
-  function PAMHandler() {
-    OSjs.Core._Handler.apply(this, arguments);
+  function SystemStorage() {
+    Storage.apply(this, arguments);
   }
 
-  PAMHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
-  PAMHandler.constructor = OSjs.Core._Handler;
-
-  OSjs.Core._Handler.use.defaults(PAMHandler);
+  SystemStorage.prototype = Object.create(Storage.prototype);
+  SystemStorage.constructor = Storage;
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Handler = PAMHandler;
+  OSjs.Storage = OSjs.Storage || {};
+  OSjs.Storage.system = SystemStorage;
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.Core.Storage);

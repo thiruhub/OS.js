@@ -29,6 +29,8 @@
     },
     "http": {
       "mode": "http",
+      "authenticator": "%AUTHENTICATOR%",
+      "storage": "%STORAGE%",
       "connection": "%CONNECTION%",
       "port" : 8000,
       "cert": {
@@ -40,7 +42,35 @@
         }
       }
     },
-    "handler" : "%HANDLER%",
-    "basedir": ""
+    "basedir": "",
+    "modules": {
+      "auth": {
+        "pam": {
+          "defaultGroups": ["admin"]
+        },
+        "shadow": {
+          "defaultGroups": ["admin"]
+        },
+        "mysql": {
+          "host": "localhost",
+          "user": "osjs",
+          "password": "osjs",
+          "database": "osjs"
+        }
+      },
+      "storage": {
+        "mysql": {
+          "host": "localhost",
+          "user": "osjs",
+          "password": "osjs",
+          "database": "osjs"
+        },
+        "system": {
+          "groups": "/etc/osjs/groups.json",
+          "blacklist": "/etc/osjs/blacklist.json",
+          "settings": "/home/%USERNAME%/.osjs/settings.json"
+        }
+      }
+    }
   }
 }
